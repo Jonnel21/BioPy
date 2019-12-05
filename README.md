@@ -11,3 +11,11 @@ cd to the directory where you saved get-pip.py
 Install pip by running `python get-pip.py` on the command line
 
 Install Tabula-py by running `pip install tabula-py`
+
+# Links
+[Tabula Docs](https://tabula-py.readthedocs.io/en/latest/index.html)
+
+# TODO
+* Research alternative libraries
+* Create unit tests
+* Use an actual pdf result 
