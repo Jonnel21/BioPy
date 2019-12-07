@@ -19,6 +19,8 @@ date_time = injection_date.at[1,1]
 sample_header = sample_id.at[0,0]
 barcode = sample_id.at[0,1]
 
+injection = info.at[2,0]
+
 # tester = sample_id.append(injection_date, ignore_index=True)
 # print(tester)
 # print(barcode)
@@ -34,11 +36,19 @@ barcode = sample_id.at[0,1]
 
 # csv_result = sample_id.assign(injection_header=date_time)
 # print(csv_result)
+# print(info)
+injection_list = injection.split(': ')
+print(injection_list)
+
+# Special case parsing for injection number
+injection_h = injection_list[0]
+injection_number = injection_list[1]
+
 
 
 # todo: parse text for specific keywords
 df2 = pd.DataFrame({sample_header:barcode}, index=[0])
-df3 = df2.assign(injection_header=date_time)
+df3 = df2.assign(injection_header=date_time, injection_h=injection_number)
 print(df3)
 
 df3.to_csv('C:\\Users\\Jonnel\\Documents\\BioPy\\test.csv', index=False)
