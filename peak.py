@@ -1,6 +1,7 @@
 from enum import Enum
 class Peak(Enum):
     UNKNOWN = "Unknown"
+    VARIANT_WINDOW = "Variant-Window"
     A1A = "A1a"
     A1B = "A1b"
     F = "F"
