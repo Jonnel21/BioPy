@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 
 # Read pdf into DataFrame
-df = tabula.read_pdf("test.pdf", multiple_tables=True, area=[[47.25,24.183,129.845,234.764],[472.876,27.0,581.514,304.549],[587.467,26.416,624.672,142.495]])
+df = tabula.read_pdf("test.pdf", multiple_tables=True, 
+area=[[47.25,24.183,129.845,234.764],[487.013,20.463,567.376,294.292],[587.467,26.416,624.672,142.495]])
 
 info = df[0].replace(np.nan, " ")
 peak = df[1].replace(np.nan, " ")
@@ -53,7 +54,7 @@ rack_pos_h = rack_pos_list[0]
 rack_pos = rack_pos_list[1]
 
 # Possible Peak variables
-A1a_rt = peak.iloc[2]
+A1a_list = peak.iloc[0]
 A1a_ht = peak.at[2,1]
 A1a_area = peak.at[3,1]
 A1a_areap = peak.at[4,1]
