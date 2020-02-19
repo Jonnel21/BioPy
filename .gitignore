@@ -4,3 +4,4 @@ test.csv
 .venv
 file.pdf
 test1.pdf
+__pycache__
