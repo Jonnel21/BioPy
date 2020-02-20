@@ -1,5 +1,6 @@
 import pdfminer.high_level as pdf
 import PyPDF2
+import pandas as pd
 from pdfreader import SimplePDFViewer
 from enum import Enum
 
@@ -57,7 +58,7 @@ def to_nested(table):
         start += 4
         end += 4
 
-    return output
+    df = pd.DataFrame(output, peak_names, columns=['R.time', 'Height', 'Area', 'Area %'])
+    return df
 
 to_nested(reader('test.pdf'))
-
