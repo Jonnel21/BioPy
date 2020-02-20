@@ -43,7 +43,21 @@ def reader(str):
     
     return peak_table
 
-def parse(table):
-    
-reader('test.pdf')
+# creates a nested list from the peak table
+def to_nested(table):
+    peak_names = table[0::5]
+    del table[0::5] # delete peak names
+    start = 0
+    end = 4
+    size = len(table) // 4
+    output = []
+    for e in range(size):
+        print("Appending: %r to output" % table[start:end])
+        output.append(table[start:end])
+        start += 4
+        end += 4
+
+    return output
+
+to_nested(reader('test.pdf'))
 
