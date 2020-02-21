@@ -58,7 +58,15 @@ def to_nested(table):
         start += 4
         end += 4
 
-    df = pd.DataFrame(output, peak_names, columns=['R.time', 'Height', 'Area', 'Area %'])
+    df = pd.DataFrame(table)
     return df
 
 to_nested(reader('test.pdf'))
+
+my_dict = dict(A1a_Rtime=123, A1a_Height=452345, A1a_Area=123354, A1a_Areap=34554,
+                A1c_Rtime=123, A1c_height=897, A1c_Area=342, A1c_Areap=5635,
+                )
+my_dict
+
+df = pd.DataFrame(my_dict, index=[0])
+df
