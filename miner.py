@@ -47,26 +47,43 @@ def reader(str):
 # creates a nested list from the peak table
 def to_nested(table):
     peak_names = table[0::5]
-    del table[0::5] # delete peak names
+    # del table[0::5] # delete peak names
     start = 0
-    end = 4
-    size = len(table) // 4
+    end = 5
+    size = len(table) // 5
     output = []
     for e in range(size):
         print("Appending: %r to output" % table[start:end])
         output.append(table[start:end])
-        start += 4
-        end += 4
+        start += 5
+        end += 5
+    return output
+    # df = pd.DataFrame(output, peak_names)
+    # print(df[Peak.A1A])
+    # return df
 
-    df = pd.DataFrame(table)
-    return df
+nested_list = to_nested(reader('test.pdf'))
+nested_list
 
-to_nested(reader('test.pdf'))
+# sorts unknowns to the end of the list
+def sort_unknown(list):
+    for i, e in enumerate(nested_list):
+        print("Index: %r, Element: %r" % (i, e))
+
+    for j, ls in enumerate(nested_list[i]):
+        print("Index: %r, Element: %r" % (j, ls))
+        
+        if(ls == "Unknown"):
+            temp = nested_list[i]
+            del nested_list[i]
+            nested_list.append(temp)
+
+
 
 my_dict = dict(A1a_Rtime=123, A1a_Height=452345, A1a_Area=123354, A1a_Areap=34554,
                 A1c_Rtime=123, A1c_height=897, A1c_Area=342, A1c_Areap=5635,
                 )
-my_dict
+# my_dict
 
-df = pd.DataFrame(my_dict, index=[0])
-df
+# df = pd.DataFrame(my_dict, index=[0])
+# df
