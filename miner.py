@@ -66,6 +66,7 @@ nested_list = to_nested(reader('test.pdf'))
 nested_list
 
 # sorts unknowns to the end of the list
+# TODO: Optimize algorithm!
 def sort_unknown(list):
     for i, e in enumerate(nested_list):
         print("Index: %r, Element: %r" % (i, e))
