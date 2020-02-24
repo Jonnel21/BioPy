@@ -3,6 +3,7 @@ import PyPDF2
 import pandas as pd
 from pdfreader import SimplePDFViewer
 from enum import Enum
+from collections import Counter
 
 class Peak(Enum):
     UNKNOWN = "Unknown"
@@ -47,12 +48,15 @@ def reader(str):
 # creates a nested list from the peak table
 def to_nested(table):
     peak_names = table[0::5]
+    cnt = Counter(peak_names)
+    print(cnt)
     # del table[0::5] # delete peak names
     start = 0
     end = 5
     size = len(table) // 5
     output = []
     for e in range(size):
+        print(e)
         print("Appending: %r to output" % table[start:end])
         output.append(table[start:end])
         start += 5
@@ -62,24 +66,17 @@ def to_nested(table):
     # print(df[Peak.A1A])
     # return df
 
-nested_list = to_nested(reader('test.pdf'))
-nested_list
-
 # sorts unknowns to the end of the list
-# TODO: Optimize algorithm!
 def sort_unknown(list):
-    for i, e in enumerate(nested_list):
+    for i, e in enumerate(list):
         print("Index: %r, Element: %r" % (i, e))
 
-    for j, ls in enumerate(nested_list[i]):
-        print("Index: %r, Element: %r" % (j, ls))
-        
-        if(ls == "Unknown"):
-            temp = nested_list[i]
-            del nested_list[i]
-            nested_list.append(temp)
+        if(e[0] == Peak.UNKNOWN.value):
+            temp = list[i]
+            del list[i]
+            list.append(temp)
 
-
+    return list
 
 my_dict = dict(A1a_Rtime=123, A1a_Height=452345, A1a_Area=123354, A1a_Areap=34554,
                 A1c_Rtime=123, A1c_height=897, A1c_Area=342, A1c_Areap=5635,
@@ -88,3 +85,6 @@ my_dict = dict(A1a_Rtime=123, A1a_Height=452345, A1a_Area=123354, A1a_Areap=3455
 
 # df = pd.DataFrame(my_dict, index=[0])
 # df
+
+nested_list = to_nested(reader('test.pdf'))
+nested_list
