@@ -66,6 +66,13 @@ def to_nested(table):
     # print(df[Peak.A1A])
     # return df
 
+# renames unknown peaks
+def rename_unknown(list):
+    num_unknown = list.count(Peak.UNKNOWN.value)
+    if(num_unknown >= 2):
+        for i in range(num_unknown):
+            list[list.index("Unknown")] += str(i+1)
+
 # sorts unknowns to the end of the list
 def sort_unknown(list):
     for i, e in enumerate(list):
