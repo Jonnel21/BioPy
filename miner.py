@@ -1,6 +1,7 @@
 import pdfminer.high_level as pdf
 import PyPDF2
 import pandas as pd
+import re
 from pdfreader import SimplePDFViewer
 from enum import Enum
 from collections import Counter
@@ -52,6 +53,7 @@ def to_nested(table):
     cnt = Counter(peak_names)
     print(cnt)
     # del table[0::5] # delete peak names
+    rename_unknown(table)
     start = 0
     end = 5
     size = len(table) // 5
@@ -77,11 +79,14 @@ def rename_unknown(list):
     else: print("There are no %ss in the list." % Peak.UNKNOWN.value)
 
 # sorts unknowns to the end of the list
+# TODO: Optimize algorithm!
+# TODO: Exit sort when algorithm finishes sorting unknowns
+# TODO: Add a counter to exit algorithm early
 def sort_unknown(list):
     for i, e in enumerate(list):
         print("Index: %r, Element: %r" % (i, e))
-
-        if(e[0] == Peak.UNKNOWN.value):
+        match = re.search('^Unknown\d', e[0])
+        if(match):
             temp = list[i]
             del list[i]
             list.append(temp)
@@ -98,3 +103,4 @@ my_dict = dict(A1a_Rtime=123, A1a_Height=452345, A1a_Area=123354, A1a_Areap=3455
 
 nested_list = to_nested(reader('test.pdf'))
 nested_list
+sort_unknown(nested_list)
