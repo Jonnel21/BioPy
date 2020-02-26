@@ -48,6 +48,7 @@ def reader(str):
 # creates a nested list from the peak table
 def to_nested(table):
     peak_names = table[0::5]
+
     cnt = Counter(peak_names)
     print(cnt)
     # del table[0::5] # delete peak names
@@ -68,10 +69,12 @@ def to_nested(table):
 
 # renames unknown peaks
 def rename_unknown(list):
-    num_unknown = list.count(Peak.UNKNOWN.value)
-    if(num_unknown >= 2):
-        for i in range(num_unknown):
-            list[list.index("Unknown")] += str(i+1)
+    if(Peak.UNKNOWN.value in list):
+        num_unknown = list.count(Peak.UNKNOWN.value)
+        if(num_unknown >= 2):
+            for i in range(num_unknown):
+                list[list.index("Unknown")] += str(i+1)
+    else: print("There are no %ss in the list." % Peak.UNKNOWN.value)
 
 # sorts unknowns to the end of the list
 def sort_unknown(list):
