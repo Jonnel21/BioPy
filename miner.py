@@ -1,7 +1,8 @@
-import pdfminer.high_level as pdf
 import PyPDF2
-import pandas as pd
 import re
+import pdfminer.high_level as pdf
+import pandas as pd
+import itertools as it
 from pdfreader import SimplePDFViewer
 from enum import Enum
 from collections import Counter
@@ -53,7 +54,7 @@ def to_nested(table):
     cnt = Counter(peak_names)
     print(cnt)
     # del table[0::5] # delete peak names
-    rename_unknown(table)
+    #rename_unknown(table)
     start = 0
     end = 5
     size = len(table) // 5
@@ -82,16 +83,23 @@ def rename_unknown(list):
 # TODO: Optimize algorithm!
 # TODO: Exit sort when algorithm finishes sorting unknowns
 # TODO: Add a counter to exit algorithm early
-def sort_unknown(list):
-    for i, e in enumerate(list):
+# TODO: add check when unknown are sorted already
+def sort_unknown(peak_table):
+    flatten = list(it.chain.from_iterable(peak_table)) # flatten list
+    cnt = Counter(flatten[0::5])
+    num_unknown = cnt["Unknown"]
+    for i, e in enumerate(peak_table):
+        if(num_unknown == 0):
+            break
         print("Index: %r, Element: %r" % (i, e))
         match = re.search('^Unknown\d', e[0])
-        if(match):
-            temp = list[i]
-            del list[i]
-            list.append(temp)
+        if(e[0] == Peak.UNKNOWN.value):
+            temp = peak_table[i]
+            del peak_table[i]
+            peak_table.append(temp)
+            num_unknown -= 1
 
-    return list
+    return peak_table
 
 my_dict = dict(A1a_Rtime=123, A1a_Height=452345, A1a_Area=123354, A1a_Areap=34554,
                 A1c_Rtime=123, A1c_height=897, A1c_Area=342, A1c_Areap=5635,
