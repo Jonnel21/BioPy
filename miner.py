@@ -48,10 +48,10 @@ def reader(str):
     return peak_table
 
 # Helper function for sorted
-def func(x):
-    if(x == "A1a"):
+def unk_last(x):
+    if(x == Peak.UNKNOWN.value):
          return 1
-    else: return -1
+    else: return 0
 
 # creates a nested list from the peak table
 def to_nested(table):
@@ -74,7 +74,7 @@ def to_nested(table):
 
   
 
-    new_list = sorted(output, key= lambda x:func(x[0]))
+    new_list = sorted(output, key= lambda x:unk_last(x[0]))
     return output
     
     # df = pd.DataFrame(output, peak_names)
