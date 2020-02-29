@@ -47,6 +47,12 @@ def reader(str):
     
     return peak_table
 
+# Helper function for sorted
+def func(x):
+    if(x == "A1a"):
+         return 1
+    else: return -1
+
 # creates a nested list from the peak table
 def to_nested(table):
     peak_names = table[0::5]
@@ -65,7 +71,12 @@ def to_nested(table):
         output.append(table[start:end])
         start += 5
         end += 5
+
+  
+
+    new_list = sorted(output, key= lambda x:func(x[0]))
     return output
+    
     # df = pd.DataFrame(output, peak_names)
     # print(df[Peak.A1A])
     # return df
