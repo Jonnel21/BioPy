@@ -1,7 +1,7 @@
-test.pdf
-test.csv
+*.pdf
+*.csv
 .vscode
 .venv
-file.pdf
-test1.pdf
 __pycache__
+Result
+test.txt

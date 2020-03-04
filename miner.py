@@ -1,6 +1,5 @@
-import PyPDF2
 import re
-import pdfminer.high_level as pdf
+import os
 import pandas as pd
 import itertools as it
 from pdfreader import SimplePDFViewer
@@ -18,7 +17,7 @@ class Peak(Enum):
     P3 = "P3"
     A0 = "A0"
 
-#pdfreader
+# Parse pdf and returns peak table
 def reader(str):
     file = open(str, 'rb')
     view = SimplePDFViewer(file)
@@ -37,7 +36,7 @@ def unk_last(x):
          return 1
     else: return 0
 
-# creates a nested list from the peak table
+# Creates a nested list from the peak table
 def to_nested(table):
     #del table[0::5] # delete peak names
     rename_unknown(table)
@@ -53,23 +52,80 @@ def to_nested(table):
     sorted_list = sorted(output, key= lambda x:unk_last(x[0]))
     return sorted_list
 
-# renames unknown peaks
+# Helper function to rename unknown peaks
 def rename_unknown(lst):
     if(Peak.UNKNOWN.value in lst):
         num_unknown = lst.count(Peak.UNKNOWN.value)
-        if(num_unknown >= 2):
-            for i in range(num_unknown):
-                lst[lst.index("Unknown")] += str(i+1)
+        for i in range(num_unknown):
+            lst[lst.index("Unknown")] += str(i+1)
     else: print("There are no %ss in the list." % Peak.UNKNOWN.value)
 
+def map_func(e):
+    # access each element
+    # assign a key  for each value
+    new_dict = {}
 
-my_dict = dict(A1a_Rtime=123, A1a_Height=452345, A1a_Area=123354, A1a_Areap=34554,
-                A1c_Rtime=123, A1c_height=897, A1c_Area=342, A1c_Areap=5635,
-                )
-# my_dict
+    key_rtime = e[0] + "_rtime" # key retention time
+    key_height = e[0] + "_height" # key height
+    key_area = e[0] + "_area" # key area
+    key_areap = e[0] + "_areap" # key area percent
 
-# df = pd.DataFrame(my_dict, index=[0])
+    key_rtime
+    key_height
+    key_area
+    key_areap
+
+# Maps 2d array into a dictionary
+def map_to_dictionary(nested_list):
+    real_dict = {}
+    for i, e in enumerate(nested_list):
+    
+        # result = map(map_func, nested_list)
+        key_rtime = "%s_rtime" % e[0] # key retention time
+        key_height = "%s_height" % e[0] # key height
+        key_area = "%s_area" % e[0] # key area
+        key_areap = "%s_areap" % e[0] # key area percent
+
+    # real_dict.update({key_rtime:e[1]}, {key_height:e[2]},
+    #                 {key_area:e[3]}, {key_areap:e[4]})
+
+        real_dict.update([(key_rtime, e[1]), (key_height, e[2]),
+                        (key_area, e[3]), (key_areap, e[4])])
+
+    return real_dict
+
+# df = pd.DataFrame(real_dict, index = [0])
 # df
+# df.to_csv("test.csv")
 
-nested_list = to_nested(reader('test.pdf'))
-nested_list
+# Open multiple PDF'S
+# with os.scandir("Result\\") as it:
+#     for entry in it:
+#         peak_table = [] 
+#         if not entry.name.startswith(".") and entry.is_file():
+#             print("Opening: " + entry.path)
+#             peak_table = reader(entry.path)
+#             nested_list = to_nested(peak_table)
+
+# nested_list = to_nested(reader('test.pdf'))
+# nested_list
+
+peak_table1 = map_to_dictionary(to_nested(reader('Result\\Test_1.pdf')))
+peak_table2 = map_to_dictionary(to_nested(reader('Result\\Test_2.pdf')))
+df1 = pd.DataFrame(peak_table1, index=[0])
+df2 = pd.DataFrame(peak_table2, index=[0])
+result = df1.append(df2)
+result.to_csv("Append.csv")
+
+# Empty dataframe
+
+# with os.scandir("Result\\") as it:
+#     for entry in it:
+#         peak_table = [] 
+#         if not entry.name.startswith(".") and entry.is_file():
+#             print("Opening: " + entry.path)
+#             peak_table = map_to_dictionary(to_nested(reader('test.pdf')))
+            
+
+
+
