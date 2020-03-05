@@ -110,21 +110,29 @@ def map_to_dictionary(nested_list):
 # nested_list = to_nested(reader('test.pdf'))
 # nested_list
 
-peak_table1 = map_to_dictionary(to_nested(reader('Result\\Test_1.pdf')))
-peak_table2 = map_to_dictionary(to_nested(reader('Result\\Test_2.pdf')))
-df1 = pd.DataFrame(peak_table1, index=[0])
-df2 = pd.DataFrame(peak_table2, index=[0])
-result = df1.append(df2)
-result.to_csv("Append.csv")
+# peak_table1 = map_to_dictionary(to_nested(reader('Result\\Test_1.pdf')))
+# peak_table2 = map_to_dictionary(to_nested(reader('Result\\Test_2.pdf')))
+# df1 = pd.DataFrame(peak_table1, index=[0])
+# # df2 = pd.DataFrame(peak_table2, index=[0])
+# result = df1.append(peak_table2)
+# result.to_csv("Append.csv")
 
 # Empty dataframe
+# columns = ["A1a_rtime", "A1a_height", "A1a_area", "A1a_areap",
+#             "A1b_rtime", "A1a_height", "A1a_area", "A1a_areap",
+#             "F_rtime", "F_height", "F_area", "F_areap"]
+df = pd.DataFrame()
 
-# with os.scandir("Result\\") as it:
+with os.scandir("Test\\") as it:
+    df = df.append([map_to_dictionary(to_nested(reader(entry))) for entry in it], ignore_index=True, sort=True)
+df.to_csv("Append4.csv")
 #     for entry in it:
 #         peak_table = [] 
 #         if not entry.name.startswith(".") and entry.is_file():
 #             print("Opening: " + entry.path)
 #             peak_table = map_to_dictionary(to_nested(reader('test.pdf')))
+
+
             
 
 
