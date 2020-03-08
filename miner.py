@@ -27,17 +27,39 @@ def reader(str):
     file = open(str, 'rb')
     view = SimplePDFViewer(file)
     view.render()
+    all_pages = [p for p in view.doc.pages()]
+
+    if(len(all_pages) >= 1):
+        dict_to = []
+        for i, e in enumerate(all_pages):
+            view.navigate(i+1) # iterate the page
+            view.render() # display the page
+            my_pdf = view.canvas.strings # save data
+
+            start = my_pdf.index('Area % ') # inclusive
+            end = my_pdf.index('Total Area: ') # exclusive
+            peak_table = my_pdf[start + 1 : end]
+
+            sampleID_index = my_pdf.index('Sample ID:')
+            peak_index = my_pdf.index('Peak ')
+            info_table = my_pdf[sampleID_index : peak_index]
+            extracted_info = info_table[1:4:2] + info_table[4:7:2] + info_table[7:8]
+
+            final_table = extracted_info + peak_table
+
+            print("page: %d, reading: %r" % (i, view.canvas.strings))
+            dict_to.append(map_to_dictionary(to_nested(final_table)))
     pdf = view.canvas.strings
-    start = pdf.index('Area % ') # inclusive
-    end = pdf.index('Total Area: ') # exclusive
-    peak_table = pdf[start + 1 : end]
+    # start = pdf.index('Area % ') # inclusive
+    # end = pdf.index('Total Area: ') # exclusive
+    # peak_table = pdf[start + 1 : end]
 
-    sampleID_index = pdf.index('Sample ID:')
-    peak_index = pdf.index('Peak ')
-    info_table = pdf[sampleID_index : peak_index]
-    extracted_info = info_table[1:4:2] + info_table[4:7:2] + info_table[7:8]
+    # sampleID_index = pdf.index('Sample ID:')
+    # peak_index = pdf.index('Peak ')
+    # info_table = pdf[sampleID_index : peak_index]
+    # extracted_info = info_table[1:4:2] + info_table[4:7:2] + info_table[7:8]
 
-    return extracted_info + peak_table
+    return dict_to
 
 # Helper function for sorted
 def unk_last(x):
@@ -145,14 +167,16 @@ def map_to_dictionary(nested_list):
 df = pd.DataFrame()
 
 # Loop through result folder
-with os.scandir("Test_PDF\\") as it:
-    df = df.append([map_to_dictionary(to_nested(reader(entry))) for entry in it],
-                    ignore_index=False, sort=False)
-# df.to_csv("Append1.csv")
-header_list = list(df.columns.values)
-sorted_header_list = sorted(header_list, key= lambda x:unk_last(x))
-df2 = df.reindex(columns=sorted_header_list)
-df2.to_csv("Append3.csv")
+with os.scandir("Result\\") as it:
+    for entry in it:
+        df = df.append(reader(entry))
+    # df = df.append([reader(entry) for entry in it],
+    #                 ignore_index=False, sort=False)
+df.to_csv("Append1.csv")
+# header_list = list(df.columns.values)
+# sorted_header_list = sorted(header_list, key= lambda x:unk_last(x))
+# df2 = df.reindex(columns=sorted_header_list)
+# df2.to_csv("Append3.csv")
 #     for entry in it:
 #         peak_table = [] 
 #         if not entry.name.startswith(".") and entry.is_file():
