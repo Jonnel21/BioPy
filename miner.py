@@ -7,38 +7,59 @@ from enum import Enum
 from collections import Counter
 
 class Peak(Enum):
+    RTIME = 1
+    HEIGHT = 2
+    AREA = 3
+    AREAP = 4
+    SAMPLE = 0
+    DATE = 1
+    INJ = 2
+    RACK = 3
+    RACKPOS = 4
     UNKNOWN = "Unknown"
-    VARIANT_WINDOW = "Variant-Window"
-    A1A = "A1a"
-    A1B = "A1b"
-    F = "F"
-    LA1C = "LA1c/CHb-1"
-    A1C = "A1c"
-    P3 = "P3"
-    A0 = "A0"
 
-# Parse pdf and returns peak table
+# Parse pdf and returns list of dictionaries
 def reader(str):
     file = open(str, 'rb')
     view = SimplePDFViewer(file)
-    view.render()
-    pdf = view.canvas.strings
-    start = pdf.index('Area % ') # inclusive
-    end = pdf.index('Total Area: ') # exclusive
-    peak_table = pdf[start + 1 : end]
-    
-    return peak_table
+    all_pages = [p for p in view.doc.pages()]
 
-# Helper function for sorted
-def unk_last(x):
-    match = re.search('^Unknown\d', x)
-    if(match):
-         return 1
+    if(len(all_pages) >= 1):
+        dict_to = []
+        for i, e in enumerate(all_pages):
+            view.navigate(i+1) # iterate the page
+            view.render() # display the page
+            my_pdf = view.canvas.strings # list data
+
+            start = my_pdf.index('Area % ') # inclusive
+            end = my_pdf.index('Total Area: ') # exclusive
+            peak_table = my_pdf[start + 1 : end]
+
+            sampleID_index = my_pdf.index('Sample ID:')
+            peak_index = my_pdf.index('Peak ')
+            info_table = my_pdf[sampleID_index : peak_index]
+
+            ex_info = info_table[1:4:2] + info_table[4:7:2] + info_table[7:8]
+
+            final_table = ex_info + peak_table
+
+            print("page: %d, reading: %r" % (i, view.canvas.strings))
+            dict_to.append(map_to_dictionary(to_nested(final_table)))
+
+    return dict_to
+
+# Helper function to sort headers
+def sort_headers(x):
+    unknown_match = re.search('^Unknown\d', x)
+    info_match = re.match('Sample|Date|Inj|Rack', x)
+    if(info_match):
+         return -1
+    elif(unknown_match):
+        return 1
     else: return 0
 
-# Creates a nested list from the peak table
+# Helper function to create a nested list
 def to_nested(table):
-    #del table[0::5] # delete peak names
     rename_unknown(table)
     start = 0
     end = 5
@@ -49,8 +70,7 @@ def to_nested(table):
         output.append(table[start:end])
         start += 5
         end += 5
-    sorted_list = sorted(output, key= lambda x:unk_last(x[0]))
-    return sorted_list
+    return output
 
 # Helper function to rename unknown peaks
 def rename_unknown(lst):
@@ -60,80 +80,50 @@ def rename_unknown(lst):
             lst[lst.index("Unknown")] += str(i+1)
     else: print("There are no %ss in the list." % Peak.UNKNOWN.value)
 
-def map_func(e):
-    # access each element
-    # assign a key  for each value
-    new_dict = {}
-
-    key_rtime = e[0] + "_rtime" # key retention time
-    key_height = e[0] + "_height" # key height
-    key_area = e[0] + "_area" # key area
-    key_areap = e[0] + "_areap" # key area percent
-
-    key_rtime
-    key_height
-    key_area
-    key_areap
-
-# Maps 2d array into a dictionary
+# Helper function to map 2d array into a dictionary
 def map_to_dictionary(nested_list):
+    header_index = 0
+    peak_index = 0
     real_dict = {}
     for i, e in enumerate(nested_list):
-    
-        # result = map(map_func, nested_list)
-        key_rtime = "%s_rtime" % e[0] # key retention time
-        key_height = "%s_height" % e[0] # key height
-        key_area = "%s_area" % e[0] # key area
-        key_areap = "%s_areap" % e[0] # key area percent
+        if(i == 0):
+            key_sampleID = "Sample_ID" 
+            key_date = "Date" 
+            key_injection = "Inj #"
+            key_rack = "Rack #"
+            key_rackpos = "Rack Position"
+            real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
+                              (key_date, e[Peak.DATE.value]),
+                              (key_injection, e[Peak.INJ.value]), 
+                              (key_rack, e[Peak.RACK.value]),
+                            (key_rackpos, e[Peak.RACKPOS.value])])
+            continue
 
-    # real_dict.update({key_rtime:e[1]}, {key_height:e[2]},
-    #                 {key_area:e[3]}, {key_areap:e[4]})
+        key_rtime = "%s_rtime" % e[peak_index] # key retention time
+        key_height = "%s_height" % e[peak_index] # key height
+        key_area = "%s_area" % e[peak_index] # key area
+        key_areap = "%s_areap" % e[peak_index] # key area percent
 
-        real_dict.update([(key_rtime, e[1]), (key_height, e[2]),
-                        (key_area, e[3]), (key_areap, e[4])])
+        real_dict.update([(key_rtime, e[Peak.RTIME.value]), 
+                          (key_height, e[Peak.HEIGHT.value]),
+                          (key_area, e[Peak.AREA.value]), 
+                          (key_areap, e[Peak.AREAP.value])])
 
     return real_dict
 
-# df = pd.DataFrame(real_dict, index = [0])
-# df
-# df.to_csv("test.csv")
+def build_csv(str):
+    # Empty dataframe
+    df = pd.DataFrame()
 
-# Open multiple PDF'S
-# with os.scandir("Result\\") as it:
-#     for entry in it:
-#         peak_table = [] 
-#         if not entry.name.startswith(".") and entry.is_file():
-#             print("Opening: " + entry.path)
-#             peak_table = reader(entry.path)
-#             nested_list = to_nested(peak_table)
+    # Loop through result folder
+    with os.scandir(str) as it:
+        for entry in it:
+            df = df.append(reader(entry))
 
-# nested_list = to_nested(reader('test.pdf'))
-# nested_list
+    # sort headers & save to csv file format
+    header_list = list(df.columns.values)
+    sorted_header_list = sorted(header_list, key= lambda x:sort_headers(x))
+    df2 = df.reindex(columns=sorted_header_list)
+    df2.to_csv(input("Please name csv file. ") + ".csv", index=False)
 
-# peak_table1 = map_to_dictionary(to_nested(reader('Result\\Test_1.pdf')))
-# peak_table2 = map_to_dictionary(to_nested(reader('Result\\Test_2.pdf')))
-# df1 = pd.DataFrame(peak_table1, index=[0])
-# # df2 = pd.DataFrame(peak_table2, index=[0])
-# result = df1.append(peak_table2)
-# result.to_csv("Append.csv")
-
-# Empty dataframe
-# columns = ["A1a_rtime", "A1a_height", "A1a_area", "A1a_areap",
-#             "A1b_rtime", "A1a_height", "A1a_area", "A1a_areap",
-#             "F_rtime", "F_height", "F_area", "F_areap"]
-df = pd.DataFrame()
-
-with os.scandir("Test\\") as it:
-    df = df.append([map_to_dictionary(to_nested(reader(entry))) for entry in it], ignore_index=True, sort=True)
-df.to_csv("Append4.csv")
-#     for entry in it:
-#         peak_table = [] 
-#         if not entry.name.startswith(".") and entry.is_file():
-#             print("Opening: " + entry.path)
-#             peak_table = map_to_dictionary(to_nested(reader('test.pdf')))
-
-
-            
-
-
-
+build_csv("Result\\")

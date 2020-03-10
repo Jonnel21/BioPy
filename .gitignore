@@ -1,7 +1,9 @@
 *.pdf
 *.csv
+*.txt
+*.bin
 .vscode
 .venv
 __pycache__
 Result
-test.txt
+Test_PDF
