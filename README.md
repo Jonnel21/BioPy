@@ -9,12 +9,15 @@ Install modules and packages via `pip install -r requirements.txt`
 To update dependecies use `pip freeze > requirements.txt`
 
 # Tkinter
-<TODO>
+TODO
 
 
 # Links
 [pdfreader Docs](https://pdfreader.readthedocs.io/en/latest/index.html)
+
 [Thinking in Tkinter](http://thinkingtkinter.sourceforge.net/all_programs.html)
+
 [Tkinter Course](https://www.youtube.com/watch?v=YXPyB4XeYLA)
+
 [Tkinter Resources](https://wiki.python.org/moin/TkInter)
 
