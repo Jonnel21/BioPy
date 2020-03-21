@@ -1,36 +1,27 @@
-# import gui package
 from tkinter import *
 
-count = 0 # global counter variable
+class Addition:
+    def __init__(self, parent):
+        self.parent = parent
+        self.counter = 0
 
-root = Tk() # initalize window
+        self.container1 = Frame(parent)
+        self.container1.pack()
 
-# add a frame to window
-container1 = Frame(root)
-container1.pack()
+        self.button1 = Button(self.container1, text='Press Me!', background='green')
+        self.button1.bind('<Button-1>', self.increment)
+        self.button1.pack()
 
-# event handler function
-def increment(event):
-    global count
-    count += 1
-    x.set(value=count)
+        self.label1 = Label(self.container1)
+        self.control = IntVar(self.label1, value=0)
+        self.label1['textvariable'] = self.control
+        self.label1.pack()
 
-# add a button to frame
-button1 = Button(container1, text='Press Me!', background='red')
+    def increment(self, event):
+        self.counter += 1
+        self.control.set(self.counter)
 
-button1.bind('<Button-1>', increment) # bind event handler function to left mouse click
-button1.pack()
-
-# add a label to frame
-label1 = Label(container1)
-
-# control variable to update variables automatically
-x = IntVar(master=label1, value=0)
-
-# allows update of x when x changes
-label1["textvariable"] = x
-label1.pack()
-
-# infinite loop to run gui
+root = Tk()
+add = Addition(root)
 root.mainloop()
 
