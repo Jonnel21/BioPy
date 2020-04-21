@@ -19,8 +19,8 @@ class Peak(Enum):
     UNKNOWN = "Unknown"
 
 # Parse pdf and returns list of dictionaries
-def reader(str):
-    file = open(str, 'rb')
+def reader(file):
+    # file = open(str, 'r+b')
     view = SimplePDFViewer(file)
     all_pages = [p for p in view.doc.pages()]
 
@@ -30,6 +30,8 @@ def reader(str):
             view.navigate(i+1) # iterate the page
             view.render() # display the page
             my_pdf = view.canvas.strings # list data
+            str = my_pdf[6]
+            my_pdf[6] = str[str.index(':')+1 :].strip() # parse injection # to just the number
 
             start = my_pdf.index('Area % ') # inclusive
             end = my_pdf.index('Total Area: ') # exclusive
@@ -96,7 +98,7 @@ def map_to_dictionary(nested_list):
                               (key_date, e[Peak.DATE.value]),
                               (key_injection, e[Peak.INJ.value]), 
                               (key_rack, e[Peak.RACK.value]),
-                            (key_rackpos, e[Peak.RACKPOS.value])])
+                              (key_rackpos, e[Peak.RACKPOS.value])])
             continue
 
         key_rtime = "%s_rtime" % e[peak_index] # key retention time
@@ -111,19 +113,21 @@ def map_to_dictionary(nested_list):
 
     return real_dict
 
-def build_csv(str):
+def build_csv(lst, save_location):
     # Empty dataframe
     df = pd.DataFrame()
 
     # Loop through result folder
-    with os.scandir(str) as it:
-        for entry in it:
-            df = df.append(reader(entry))
+    # with os.scandir(str) as it:
+    for entry in lst:
+        df = df.append(reader(entry))
 
     # sort headers & save to csv file format
     header_list = list(df.columns.values)
     sorted_header_list = sorted(header_list, key= lambda x:sort_headers(x))
     df2 = df.reindex(columns=sorted_header_list)
-    df2.to_csv(input("Please name csv file. ") + ".csv", index=False)
+    df2.to_csv(save_location, index=False)
 
-build_csv("Result\\")
+# build_csv("Result\\")
+# build_csv("hell.pdf")
+# build_csv()
