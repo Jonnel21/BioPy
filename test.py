@@ -6,10 +6,11 @@ class Window:
     def __init__(self, parent):
         self.parent = parent
         self.counter = 0
+        self.parent.title('Test GUI')
         self.csv_filename = ""
 
         self.container1 = Frame(parent)
-        self.container1.pack(fill=BOTH, expand=1)
+        self.container1.pack(fill=BOTH, expand=2)
 
         self.saveContainer = Frame(parent)
         self.saveContainer.pack()
@@ -20,11 +21,11 @@ class Window:
 
         self.button1 = Button(self.container1, text='Browse', background='green')
         self.button1.bind('<Button-1>', self.onButton1Click)
-        self.button1.pack()
+        self.button1.pack(side=LEFT)
 
         self.button2 = Button(self.container1, text='Clear All')
         self.button2.bind('<Button-1>', self.emptyListBox1)
-        self.button2.pack()
+        self.button2.pack(side=RIGHT)
 
         self.button3 = Button(self.container1, text='Build_CSV_Test')
         self.button3.bind('<Button-1>', self.onButton3Click)
@@ -37,10 +38,7 @@ class Window:
         self.button4 = Button(self.saveContainer, text='Save')
         self.button4.bind('<Button-1>', self.onButtonSaveClick)
         self.button4.pack(side=RIGHT)
-
-        self.label1 = Label(self.container1, text='TestGui')
-        self.label1.pack()
-
+        
     def onButton1Click(self, event):
         filename = fd.askopenfiles(mode='r+b')
         # print(self.csv_filename)
