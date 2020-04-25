@@ -19,8 +19,8 @@ class Peak(Enum):
     UNKNOWN = "Unknown"
 
 # Parse pdf and returns list of dictionaries
-def reader(file):
-    # file = open(str, 'r+b')
+def reader(str):
+    file = open(str, 'r+b')
     view = SimplePDFViewer(file)
     all_pages = [p for p in view.doc.pages()]
 
@@ -113,14 +113,27 @@ def map_to_dictionary(nested_list):
 
     return real_dict
 
-def build_csv(lst, save_location):
+# def build_csv(lst, save_location):
+#     # Empty dataframe
+#     df = pd.DataFrame()
+
+#     # Loop through result folder
+#     # with os.scandir(str) as it:
+#     for entry in lst:
+#         df = df.append(reader(entry))
+
+#     # sort headers & save to csv file format
+#     header_list = list(df.columns.values)
+#     sorted_header_list = sorted(header_list, key= lambda x:sort_headers(x))
+#     df2 = df.reindex(columns=sorted_header_list)
+#     df2.to_csv(save_location, index=False)
+
+def build_csv(file_tuple, save_location):
     # Empty dataframe
     df = pd.DataFrame()
 
-    # Loop through result folder
-    # with os.scandir(str) as it:
-    for entry in lst:
-        df = df.append(reader(entry))
+    for element in file_tuple:
+        df = df.append(reader(element))
 
     # sort headers & save to csv file format
     header_list = list(df.columns.values)
