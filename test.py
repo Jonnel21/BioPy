@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from threading import Thread
 from miner import *
 import queue
@@ -22,12 +23,12 @@ class Window:
         self.listbox1.configure(width=100, height=20)
         self.listbox1.pack(fill=BOTH, expand=1)
 
-        self.browseButton = Button(self.container1, text='Browse', background='green')
-        self.browseButton.bind('<Button-1>', self.onBrowseClick)
+        self.browseButton = Button(self.container1, text='Browse', background='green', 
+                                  command=self.onBrowseClick)
         self.browseButton.pack(side=LEFT)
 
-        self.clearAllButton = Button(self.container1, text='Clear All')
-        self.clearAllButton.bind('<Button-1>', self.clearListBox)
+        self.clearAllButton = Button(self.container1, text='Clear All',
+                                    command=self.clearListBox)
         self.clearAllButton.pack(side=RIGHT)
 
         self.buildCsvButton = Button(self.container1, text='Build_CSV_Test')
@@ -37,18 +38,17 @@ class Window:
         self.savePath.insert(0, "Enter save location")
         self.savePath.pack(side=LEFT)
 
-        self.saveButton = Button(self.saveContainer, text='Save')
-        self.saveButton.bind('<Button-1>', self.onButtonSaveClick)
+        self.saveButton = Button(self.saveContainer, text='Save',
+                                command=self.onButtonSaveClick)
         self.saveButton.pack(side=RIGHT)
 
-        self.testButton = Button(self.container1, text='Test')
-        self.testButton.bind('<Button-1>', self.onTestClick)
+        self.testButton = Button(self.container1, text='Automated_Test',
+                                command=self.onTestClick)
         self.testButton.pack()
 
         self.progressbar = ttk.Progressbar(self.container1, value=0, orient=HORIZONTAL, mode='indeterminate', length=100)
-        self.progressbar.pack()
 
-    def onBrowseClick(self, event):
+    def onBrowseClick(self):
         filename = fd.askopenfiles(mode='r+b')
         if(len(filename) > 1):
             for f in filename:
@@ -57,10 +57,11 @@ class Window:
         else:
             print(filename[0].name)
 
-    def clearListBox(self, event):
+    def clearListBox(self):
         self.listbox1.delete(0, END)
 
-    def onButtonSaveClick(self, event):
+
+    def onButtonSaveClick(self):
         csv = [("csv", "*.csv|*.CSV"), ("All files", "*")]
         self.csv_filename = fd.asksaveasfilename(title='Save As', defaultext='.csv', filetypes=csv)
         self.savePath.insert(0, self.csv_filename)
@@ -69,15 +70,20 @@ class Window:
         try:
             str = self.q.get(0)
             self.progressbar.stop()
-                
+            if(messagebox.askquestion('Info', 'Complete!', parent=self.container1, 
+                                     icon=messagebox.INFO, type=messagebox.OK)):
+                self.testButton['state'] = NORMAL
+                self.progressbar.pack_forget()
+
         except queue.Empty:
-            print('Checking queue...')
             self.parent.after(1000, self.checkQ)
 
-    def onTestClick(self, event):
+    def onTestClick(self):
+        self.progressbar.pack()
         self.t1 = self.myThread(self.q)
         self.progressbar.start(15)
         self.t1.start()
+        self.testButton['state'] = DISABLED
         self.parent.after(1000, self.checkQ)
 
     class myThread(Thread):
