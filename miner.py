@@ -113,33 +113,33 @@ def map_to_dictionary(nested_list):
 
     return real_dict
 
-def build_csv(str, save_location):
-    # Empty dataframe
-    df = pd.DataFrame()
-
-    # Loop through result folder
-    with os.scandir(str) as it:
-        for entry in it:
-            df = df.append(reader(entry))
-
-    # sort headers & save to csv file format
-    header_list = list(df.columns.values)
-    sorted_header_list = sorted(header_list, key= lambda x:sort_headers(x))
-    df2 = df.reindex(columns=sorted_header_list)
-    df2.to_csv(save_location, index=False)
-
-# def build_csv(file_tuple, save_location):
+# def build_csv(str, save_location):
 #     # Empty dataframe
 #     df = pd.DataFrame()
 
-#     for element in file_tuple:
-#         df = df.append(reader(element))
+#     # Loop through result folder
+#     with os.scandir(str) as it:
+#         for entry in it:
+#             df = df.append(reader(entry))
 
 #     # sort headers & save to csv file format
 #     header_list = list(df.columns.values)
 #     sorted_header_list = sorted(header_list, key= lambda x:sort_headers(x))
 #     df2 = df.reindex(columns=sorted_header_list)
 #     df2.to_csv(save_location, index=False)
+
+def build_csv(file_tuple, save_location):
+    # Empty dataframe
+    df = pd.DataFrame()
+
+    for element in file_tuple:
+        df = df.append(reader(element))
+
+    # sort headers & save to csv file format
+    header_list = list(df.columns.values)
+    sorted_header_list = sorted(header_list, key= lambda x:sort_headers(x))
+    df2 = df.reindex(columns=sorted_header_list)
+    df2.to_csv(save_location, index=False)
 
 # build_csv("Result\\")
 # build_csv("hell.pdf")
