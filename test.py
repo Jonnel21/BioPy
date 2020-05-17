@@ -39,7 +39,7 @@ class Window:
         self.savePath.insert(0, "Enter save location")
         self.savePath.pack(side=LEFT)
 
-        self.saveButton = Button(self.saveContainer, text='Save',
+        self.saveButton = Button(self.saveContainer, text='Save As',
                                 command=self.onButtonSaveClick)
         self.saveButton.pack(side=RIGHT)
 
