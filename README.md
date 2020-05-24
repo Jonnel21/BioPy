@@ -23,8 +23,11 @@ TODO
 
 # Description
 To run the code type: `xpdf_test.py` on the terminal
+
 xpdf_test.py will locate a "Result" folder
+
 Ensure the folder has D-10 only pdf results
+
 To change the folder path simply, edit `convert_pdf` method in xpdf_test.py to point it to a different folder.
 
 
