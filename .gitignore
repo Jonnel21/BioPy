@@ -5,6 +5,9 @@
 .vscode
 .venv
 __pycache__
+xpdf_python/
 Result
 Test_PDF
 temp.py
+v2
+vnbs

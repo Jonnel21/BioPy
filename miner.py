@@ -13,9 +13,10 @@ class Peak(Enum):
     AREAP = 4
     SAMPLE = 0
     DATE = 1
-    INJ = 2
-    RACK = 3
-    RACKPOS = 4
+    TIME = 2
+    INJ = 3
+    RACK = 4
+    RACKPOS = 5
     UNKNOWN = "Unknown"
 
 # Parse pdf and returns list of dictionaries
@@ -53,7 +54,7 @@ def reader(str):
 # Helper function to sort headers
 def sort_headers(x):
     unknown_match = re.search('^Unknown\d', x)
-    info_match = re.match('Sample|Date|Inj|Rack', x)
+    info_match = re.match('Sample|Date|Time|Inj|Rack', x)
     if(info_match):
          return -1
     elif(unknown_match):
@@ -91,11 +92,13 @@ def map_to_dictionary(nested_list):
         if(i == 0):
             key_sampleID = "Sample_ID" 
             key_date = "Date" 
+            key_time = "Time"
             key_injection = "Inj #"
             key_rack = "Rack #"
             key_rackpos = "Rack Position"
             real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
                               (key_date, e[Peak.DATE.value]),
+                              (key_time, e[Peak.TIME.value] ),
                               (key_injection, e[Peak.INJ.value]), 
                               (key_rack, e[Peak.RACK.value]),
                               (key_rackpos, e[Peak.RACKPOS.value])])
@@ -113,27 +116,14 @@ def map_to_dictionary(nested_list):
 
     return real_dict
 
-# def build_csv(str, save_location):
-#     # Empty dataframe
-#     df = pd.DataFrame()
-
-#     # Loop through result folder
-#     with os.scandir(str) as it:
-#         for entry in it:
-#             df = df.append(reader(entry))
-
-#     # sort headers & save to csv file format
-#     header_list = list(df.columns.values)
-#     sorted_header_list = sorted(header_list, key= lambda x:sort_headers(x))
-#     df2 = df.reindex(columns=sorted_header_list)
-#     df2.to_csv(save_location, index=False)
-
-def build_csv(file_tuple, save_location):
+def build_csv(str, save_location):
     # Empty dataframe
     df = pd.DataFrame()
 
-    for element in file_tuple:
-        df = df.append(reader(element))
+    # Loop through result folder
+    with os.scandir(str) as it:
+        for entry in it:
+            df = df.append(reader(entry))
 
     # sort headers & save to csv file format
     header_list = list(df.columns.values)
@@ -141,6 +131,19 @@ def build_csv(file_tuple, save_location):
     df2 = df.reindex(columns=sorted_header_list)
     df2.to_csv(save_location, index=False)
 
-# build_csv("Result\\")
+# def build_csv(file_tuple, save_location):
+#     # Empty dataframe
+#     df = pd.DataFrame()
+
+#     for element in file_tuple:
+#         df = df.append(reader(element))
+
+#     # sort headers & save to csv file format
+#     header_list = list(df.columns.values)
+#     sorted_header_list = sorted(header_list, key= lambda x:sort_headers(x))
+#     df2 = df.reindex(columns=sorted_header_list)
+#     df2.to_csv(save_location, index=False)
+
+# build_csv("Result", 'v2.csv')
 # build_csv("hell.pdf")
 # build_csv()
