@@ -12,6 +12,7 @@ class Window:
         self.parent = parent
         self.parent.title('Test GUI')
         self.csv_filename = ""
+        self.radioOption = StringVar(value="0")
         self.q = queue.Queue()
 
         self.container1 = Frame(parent)
@@ -19,6 +20,9 @@ class Window:
 
         self.saveContainer = Frame(parent)
         self.saveContainer.pack()
+
+        self.optionContainter = Frame(parent)
+        self.optionContainter.pack(anchor=E)
 
         self.listbox1 = Listbox(self.container1)
         self.listbox1.configure(width=100, height=20)
@@ -48,6 +52,18 @@ class Window:
         # self.testButton.pack()
 
         self.progressbar = ttk.Progressbar(self.container1, value=0, orient=HORIZONTAL, mode='indeterminate', length=100)
+
+        self.option1 = Radiobutton(self.optionContainter, variable=self.radioOption, text='D-10', value='D-10', command=self.printRadio)
+        self.option1.pack(anchor=E)
+
+        self.option2 = Radiobutton(self.optionContainter, variable=self.radioOption, text='Varient', value='Varient', command=self.printRadio)
+        self.option2.pack(anchor=E)
+
+        self.option3 = Radiobutton(self.optionContainter, variable=self.radioOption, text='VNBS', value='VNBS', command=self.printRadio)
+        self.option3.pack(anchor=E)
+
+    def printRadio(self):
+        print(f'you have selected {self.radioOption.get()}!')
 
     def onBrowseClick(self):
         filename = fd.askopenfiles(mode='r+b')
