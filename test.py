@@ -8,7 +8,7 @@ import queue
 from d10 import D10Strategy
 from varient2 import VarientStrategy
 from nbs import NbsStrategy
-from tester import ContextManager
+from contextManager import ContextManager
 import tkinter.filedialog as fd
 import pdfreader.exceptions
 
