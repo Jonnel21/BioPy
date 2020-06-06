@@ -3,7 +3,12 @@ from tkinter import ttk
 from tkinter import messagebox
 from threading import Thread
 from miner import *
+from tester import ContextManager
 import queue
+from d10 import D10Strategy
+from varient2 import VarientStrategy
+from nbs import NbsStrategy
+from tester import ContextManager
 import tkinter.filedialog as fd
 import pdfreader.exceptions
 
@@ -14,6 +19,7 @@ class Window:
         self.csv_filename = ""
         self.radioOption = StringVar(value="0")
         self.q = queue.Queue()
+        self.manager = ContextManager()
 
         self.container1 = Frame(parent)
         self.container1.pack(fill=BOTH, expand=2)
@@ -49,20 +55,29 @@ class Window:
 
         self.testButton = Button(self.container1, text='Automated_Test',
                                 command=self.onTestClick)
-        # self.testButton.pack()
+        self.testButton.pack()
 
         self.progressbar = ttk.Progressbar(self.container1, value=0, orient=HORIZONTAL, mode='indeterminate', length=100)
 
-        self.option1 = Radiobutton(self.optionContainter, variable=self.radioOption, text='D-10', value='D-10', command=self.printRadio)
+        self.option1 = Radiobutton(self.optionContainter, variable=self.radioOption, text='Varient', value='Varient', command=self.SelectVarientStrat)
         self.option1.pack(anchor=E)
 
-        self.option2 = Radiobutton(self.optionContainter, variable=self.radioOption, text='Varient', value='Varient', command=self.printRadio)
+        self.option2 = Radiobutton(self.optionContainter, variable=self.radioOption, text='D-10', value='D-10', command=self.selectD10Strat)
         self.option2.pack(anchor=E)
 
-        self.option3 = Radiobutton(self.optionContainter, variable=self.radioOption, text='VNBS', value='VNBS', command=self.printRadio)
+        self.option3 = Radiobutton(self.optionContainter, variable=self.radioOption, text='VNBS', value='VNBS', command=self.selectVNBS)
         self.option3.pack(anchor=E)
 
-    def printRadio(self):
+    def selectD10Strat(self):
+        self.manager.set(D10Strategy())
+        print(f'you have selected {self.radioOption.get()}!')
+    
+    def SelectVarientStrat(self):
+        self.manager.set(VarientStrategy())
+        print(f'you have selected {self.radioOption.get()}!')
+
+    def selectVNBS(self):
+        self.manager.set(NbsStrategy())
         print(f'you have selected {self.radioOption.get()}!')
 
     def onBrowseClick(self):
@@ -88,7 +103,7 @@ class Window:
             messagebox.showerror('Error', 'Save location is empty.')
         else:
             self.progressbar.pack()
-            self.t1 = self.myThread(self.q, files, self.csv_filename)
+            self.t1 = self.myThread(self.q, files, self.csv_filename, self.manager)
             self.progressbar.start(20)
             self.t1.start()
             self.testButton['state'] = DISABLED
@@ -117,19 +132,18 @@ class Window:
             self.parent.after(1000, self.checkQ)
 
     class myThread(Thread):
-        def __init__(self, qu, elements, save):
+        def __init__(self, qu, elements, save, manager):
             Thread.__init__(self)
             self.qu = qu
             self.elements = elements
             self.save = save
+            self.manager = manager
 
         def run(self):
-            try:
-                build_csv(self.elements, self.save)            
+                # build_csv(self.elements, self.save)
+                self.manager.get().convert_pdf(self.elements)
+                self.manager.get().build_csv(self.save)            
                 self.qu.put("Done")
-
-            except pdfreader.exceptions.ParserException:
-                self.qu.put("Error")
 
         def getQueue(self):
             return self.qu
