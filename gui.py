@@ -54,7 +54,7 @@ class Window:
 
         self.testButton = Button(self.container1, text='Automated_Test',
                                 command=self.onTestClick)
-        self.testButton.pack()
+        # self.testButton.pack()
 
         self.progressbar = ttk.Progressbar(self.container1, value=0, orient=HORIZONTAL, mode='indeterminate', length=100)
 
