@@ -2,8 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from threading import Thread
-from miner import *
-from tester import ContextManager
+from contextManager import ContextManager
 import queue
 from d10 import D10Strategy
 from varient2 import VarientStrategy
