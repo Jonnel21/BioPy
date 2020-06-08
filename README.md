@@ -23,9 +23,9 @@ To start the application: type `python gui.py` on the terminal
 ![BioPy Application](/Assets/demo.gif)
 
 ### Remaining Tasks
-- [] Create Unit Tests
-- [] Create exe using Pyinstaller
-- [] Automatically update exe on `git push`
-- [] Refactor Thread class in the GUI
-- [] Update dependancies 
+-[] Create Unit Tests
+-[] Create exe using Pyinstaller
+-[] Automatically update exe on `git push`
+-[] Refactor Thread class in the GUI
+-[] Update dependancies 
 
