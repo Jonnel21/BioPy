@@ -58,13 +58,13 @@ class Window:
         self.progressbar = ttk.Progressbar(self.container1, value=0, orient=HORIZONTAL, mode='indeterminate', length=100)
 
         self.option1 = Radiobutton(self.optionContainter, variable=self.radioOption, text='Varient', value='Varient', command=self.SelectVarientStrat)
-        self.option1.pack(anchor=E)
+        self.option1.pack(anchor=W)
 
         self.option2 = Radiobutton(self.optionContainter, variable=self.radioOption, text='D-10', value='D-10', command=self.selectD10Strat)
-        self.option2.pack(anchor=E)
+        self.option2.pack(anchor=W)
 
         self.option3 = Radiobutton(self.optionContainter, variable=self.radioOption, text='VNBS', value='VNBS', command=self.selectVNBS)
-        self.option3.pack(anchor=E)
+        self.option3.pack(anchor=W)
 
     def selectD10Strat(self):
         self.manager.set(D10Strategy())
