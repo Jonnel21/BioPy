@@ -13,7 +13,7 @@ import tkinter.filedialog as fd
 class Window:
     def __init__(self, parent):
         self.parent = parent
-        self.parent.title('Test GUI')
+        self.parent.title('BioPy')
         self.csv_filename = ""
         self.radioOption = StringVar(value="0")
         self.q = queue.Queue()
@@ -40,14 +40,14 @@ class Window:
                                     command=self.clearListBox)
         self.clearAllButton.pack(side=RIGHT)
 
-        self.buildCsvButton = Button(self.container1, text='Build_CSV_Test', command=self.onTestClick)
+        self.buildCsvButton = Button(self.container1, text='Start!', command=self.onTestClick)
         self.buildCsvButton.pack()
 
         self.savePath = Listbox(self.saveContainer, width=50, height=1)
-        self.savePath.insert(0, "Enter save location")
+        self.savePath.insert(0, "Enter save location...")
         self.savePath.pack(side=LEFT)
 
-        self.saveButton = Button(self.saveContainer, text='Save As',
+        self.saveButton = Button(self.saveContainer, text='Save As...',
                                 command=self.onButtonSaveClick)
         self.saveButton.pack(side=RIGHT)
 
