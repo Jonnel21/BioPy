@@ -9,7 +9,6 @@ from varient2 import VarientStrategy
 from nbs import NbsStrategy
 from contextManager import ContextManager
 import tkinter.filedialog as fd
-import pdfreader.exceptions
 
 class Window:
     def __init__(self, parent):
@@ -139,7 +138,6 @@ class Window:
             self.manager = manager
 
         def run(self):
-                # build_csv(self.elements, self.save)
                 self.manager.get().convert_pdf(self.elements)
                 self.manager.get().build_csv(self.save)            
                 self.qu.put("Done")
