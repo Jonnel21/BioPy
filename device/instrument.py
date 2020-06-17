@@ -72,8 +72,8 @@ class InstrumentStrategy(ABC):
             num_unknown = lst.count(Peak.UNKNOWN.value)
             for i in range(num_unknown):
                 lst[lst.index("Unknown")] += str(i+1)
-        else: return "There are no %ss in the list." % Peak.UNKNOWN.value #print("There are no %ss in the list." % Peak.UNKNOWN.value)
-
+        else: return "There are no %ss in the list." % Peak.UNKNOWN.value
+        
     def to_nested(self, table: list):
 
         '''
