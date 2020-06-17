@@ -64,7 +64,9 @@ class InstrumentStrategy(ABC):
                 lst: list
             
             Returns:
-                None
+                "List is empty."
+                or
+                "There are no Unknowns in the list."
         '''
         if(len(lst) == 0): return "List is empty."
 
@@ -73,7 +75,7 @@ class InstrumentStrategy(ABC):
             for i in range(num_unknown):
                 lst[lst.index("Unknown")] += str(i+1)
         else: return "There are no %ss in the list." % Peak.UNKNOWN.value
-        
+
     def to_nested(self, table: list):
 
         '''
