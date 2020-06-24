@@ -4,9 +4,8 @@ import shutil
 import re
 import pandas as pd
 from peak import Peak
-from abc import ABC, abstractmethod
 
-class InstrumentStrategy(ABC):
+class InstrumentStrategy():
 
     def convert_pdf(self, pdf_tuples: tuple):
         print(pdf_tuples)
@@ -212,19 +211,26 @@ class InstrumentStrategy(ABC):
         df2.to_csv(save_location, index=False)
         shutil.rmtree('txt_files')
 
-    @abstractmethod
-    def parse_text(text_file_path: str):
+    def parse_text(self, txt_file):
 
         '''
         Reads a txt file and saves the strings in a list.
 
-        Parameter:
-            text_file_path: str
+            Parameter:
+                text_file_path: str
 
-        Returns:
-            test_dict: dict
+            Returns:
+                decoded_arr: list
         '''
 
-        pass
+        arr = []
+        with open(txt_file, 'rb') as f:
+            info_table = []
+            nested_table = []
+            temp = ""
+            arr = f.read().split()
+            decoded_arr = self.wrapper_decode(arr)
+
+        return decoded_arr
 
     
