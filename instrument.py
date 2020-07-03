@@ -64,13 +64,14 @@ class InstrumentStrategy(ABC):
                 lst: list
             
             Returns:
-                None
+                lst: list
         '''
 
         if(Peak.UNKNOWN.value in lst):
             num_unknown = lst.count(Peak.UNKNOWN.value)
             for i in range(num_unknown):
                 lst[lst.index("Unknown")] += str(i+1)
+            return lst
         else: print("There are no %ss in the list." % Peak.UNKNOWN.value)
 
     def to_nested(self, table: list):
@@ -209,7 +210,6 @@ class InstrumentStrategy(ABC):
         df2.to_csv(save_location, index=False)
         shutil.rmtree('txt_files')
 
-    @abstractmethod
     def parse_text(text_file_path: str):
 
         '''
