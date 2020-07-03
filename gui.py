@@ -3,12 +3,12 @@ from tkinter import ttk
 from tkinter import messagebox
 from threading import Thread
 from contextManager import ContextManager
-# from d10 import D10Strategy
+from d10 import D10Strategy
 # from varient2 import VarientStrategy
 # from nbs import NbsStrategy
-from d10dictionary import D10Dictionary
-from varientdictionary import VarientDictionary
-from vnbsdictionary import VnbsDictionary
+# from d10dictionary import D10Dictionary
+# from varientdictionary import VarientDictionary
+# from vnbsdictionary import VnbsDictionary
 from contextManager import ContextManager
 import queue
 import tkinter.filedialog as fd
@@ -70,7 +70,7 @@ class Window:
         self.option3.pack(anchor=W)
 
     def selectD10Strat(self):
-        self.manager.set(D10Dictionary())
+        self.manager.set(D10Strategy())
         print(f'you have selected {self.radioOption.get()}!')
     
     def SelectVarientStrat(self):

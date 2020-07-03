@@ -1,4 +1,4 @@
-from createdict import CreateDictionary
+from device.instrument import InstrumentStrategy
 class ContextManager:
 
     """
@@ -10,7 +10,7 @@ class ContextManager:
     def __init__(self, strategy=None):
         self.strategy = strategy
 
-    def set(self, new_strategy: CreateDictionary):
+    def set(self, new_strategy: InstrumentStrategy):
         self.strategy = new_strategy
 
     def get(self):

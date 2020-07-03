@@ -210,27 +210,3 @@ class InstrumentStrategy():
         df2 = df.reindex(columns=sorted_header_list)
         df2.to_csv(save_location, index=False)
         shutil.rmtree('txt_files')
-
-    def parse_text(self, txt_file):
-
-        '''
-        Reads a txt file and saves the strings in a list.
-
-            Parameter:
-                text_file_path: str
-
-            Returns:
-                decoded_arr: list
-        '''
-
-        arr = []
-        with open(txt_file, 'rb') as f:
-            info_table = []
-            nested_table = []
-            temp = ""
-            arr = f.read().split()
-            decoded_arr = self.wrapper_decode(arr)
-
-        return decoded_arr
-
-    
