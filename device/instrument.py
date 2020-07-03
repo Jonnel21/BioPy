@@ -30,7 +30,7 @@ class InstrumentStrategy():
             pdf_file = tmp_arr[len(tmp_arr) - 1]
             name = os.path.splitext(pdf_file)[0] # returns filename without extenstion
             with open(f"./txt_files/{name}.txt", 'x') as file:
-                subprocess.run(['C:\\Users\\Jonnel\\Desktop\\BioPy\\pdftotext', '-simple', f'{i}', '-'], stdout=file)
+                subprocess.run(['.\pdftotext', '-simple', f'{i}', '-'], stdout=file)
                 file.close()
             
     def wrapper_decode(self, arr: list):
