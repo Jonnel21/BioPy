@@ -16,7 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/inno-setup-action
+    - uses: actions/inno-setup-action@master
+      with:
+       -iss: 'test.iss'
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
