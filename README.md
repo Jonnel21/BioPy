@@ -1,3 +1,4 @@
+![BioPy](https://github.com/Jonnel21/BioPy/workflows/BioPy/badge.svg?branch=master)
 # BioPy
 Internal tool used to scrape data from a pdf on the D-10, Variants, and VNBS products.
 
