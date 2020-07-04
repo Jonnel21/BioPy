@@ -2,6 +2,7 @@ import os
 import subprocess
 import shutil
 import re
+import sys
 import pandas as pd
 from peak import Peak
 
@@ -9,6 +10,8 @@ class InstrumentStrategy():
 
     def convert_pdf(self, pdf_tuples: tuple):
         print(pdf_tuples)
+        meipass_path = sys._MEIPASS
+        pdftotext_path = os.path.join(meipass_path, 'pdftotext')
         '''
         Takes a pdf file and converts it to a txt file.
 
@@ -30,7 +33,7 @@ class InstrumentStrategy():
             pdf_file = tmp_arr[len(tmp_arr) - 1]
             name = os.path.splitext(pdf_file)[0] # returns filename without extenstion
             with open(f"./txt_files/{name}.txt", 'x') as file:
-                subprocess.run(['.\pdftotext', '-simple', f'{i}', '-'], stdout=file)
+                subprocess.run([pdftotext_path, '-simple', f'{i}', '-'], stdout=file)
                 file.close()
             
     def wrapper_decode(self, arr: list):
