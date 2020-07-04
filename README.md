@@ -2,6 +2,9 @@
 # BioPy
 Internal tool used to scrape data from a pdf on the D-10, Variants, and VNBS products.
 
+## Pre-Release
+[Pre-Release](https://github.com/Jonnel21/BioPy/releases)
+
 ## Usage
 Install [microsoft c++ build tools](https://visualstudio.microsoft.com/downloads/)
 
