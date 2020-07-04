@@ -23,7 +23,7 @@ jobs:
     - name: Compile iss script
       run: .\iscc BioPy_Setup.iss
       shell: pwsh
-      working-directory: Inno Setup 6
+      working-directory: scripts
 #     - name: Install dependencies
 #       run: |
 #         python -m pip install --upgrade pip
