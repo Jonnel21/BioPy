@@ -21,7 +21,7 @@ jobs:
       with:
         python-version: 3.8
     - name: Compile iss script
-      run: iscc BioPy_Setup.iss
+      run: .\iscc BioPy_Setup.iss
       shell: cmd
       working-directory: Inno Setup 6
     - name: Install dependencies
