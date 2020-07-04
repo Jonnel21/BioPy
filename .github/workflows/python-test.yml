@@ -22,7 +22,6 @@ jobs:
 #         python-version: 3.8
     - name: Compile iss script
       run: iscc BioPy_Setup.iss
-      shell: pwsh
       working-directory: scripts
 #     - name: Install dependencies
 #       run: |
