@@ -19,3 +19,6 @@ superrun.py
 walkable.py
 xpdf_test.py
 BioPy Screenshots
+build
+dist
+gui.spec
