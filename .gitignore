@@ -2,6 +2,7 @@
 *.csv
 *.txt
 *.bin
+*.dat
 .vscode
 .venv
 __pycache__
