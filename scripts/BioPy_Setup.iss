@@ -1,5 +1,5 @@
-; -- Example2.iss --
-; Same as Example1.iss, but creates its icon in the Programs folder of the
+; -- BioPy_Setup.iss --
+; Creates its icon in the Programs folder of the
 ; Start Menu instead of in a subfolder, and also creates a desktop icon.
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
@@ -18,7 +18,7 @@ SolidCompression=yes
 OutputDir= .
 
 [Files]
-Source: "C:\Users\Jonnel\Desktop\BioPy\dist\gui\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".\gui\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autoprograms}\BioPy"; Filename: "{app}\gui.exe"
