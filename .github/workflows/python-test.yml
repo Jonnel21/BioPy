@@ -16,38 +16,38 @@ jobs:
 
     steps:
     - name: Checkout repo
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
 
-    # - name: Set up Python 3.8
-    #   uses: actions/setup-python@v2
-    #   with:
-    #     python-version: 3.8
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
 
-    # - name: Install dependencies
-    #   run: |
-    #     python -m pip install --upgrade pip
-    #     pip install -r requirements.txt
-    #   working-directory: src
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+      working-directory: src
 
-    # - name: Pyinstaller
-    #   run: pyinstaller gui.spec
-    #   working-directory: src
+    - name: Pyinstaller
+      run: pyinstaller gui.spec
+      working-directory: src
 
-    # # - name: Upload artifact
-    # # - uses: actions/upload-artifact@v2
-    # #   with:
-    # #     name: test
-    # #     path: src/dist
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: test
+        path: src/dist
 
-    # - name: Download artifact
-    # - uses: actions/download-artifact@v2
-    #   with:
-    #     name: test
-    #     path: src/dist
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: test
+        path: src/dist
 
-    # - name: Display structure of downloaded files
-    #   run: dir
-    #   working-directory: src/dist
+    - name: Display structure of downloaded files
+      run: dir
+      working-directory: src/dist
         
 #     - name: Compile iss script
 #       run: ./iscc BioPy_Setup.iss
