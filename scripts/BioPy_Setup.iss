@@ -15,10 +15,10 @@ DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\MyProg.exe
 Compression=lzma2
 SolidCompression=yes
-OutputDir= .
+OutputDir= D:\a\BioPy\BioPy\src\dist\gui\setup
 
 [Files]
-Source: ".\gui\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\a\BioPy\BioPy\src\dist\gui\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autoprograms}\BioPy"; Filename: "{app}\gui.exe"
