@@ -45,27 +45,27 @@ jobs:
     #     name: test
     #     path: src/dist
 
-    - name: Display structure of downloaded files
-      run: dir
-      working-directory: src/dist/gui
+    # - name: Display structure of downloaded files
+    #   run: dir
+    #   working-directory: src/dist/gui
         
     - name: Compile iss script
       run: ./iscc BioPy_Setup.iss
       working-directory: scripts
       shell: pwsh
 
-    - name: Sign setup.exe
-      uses: dlemstra/code-sign-action@v1
-      with:
-        certificate: '${{ secrets.CERTIFICATE }}'
-        folder: 'src\dist\gui\setup\mysetup.exe'
-        recursive: false
+    # - name: Sign setup.exe
+    #   uses: dlemstra/code-sign-action@v1
+    #   with:
+    #     certificate: '${{ secrets.CERTIFICATE }}'
+    #     folder: 'src\dist\gui\setup\mysetup.exe'
+    #     recursive: false
 
     - name: Upload setup.exe artifact
       uses: actions/upload-artifact@v2
       with:
         name: setup
-        path: src\dist\gui\setup\mysetup.exe
+        path: src\dist\gui\setup\BioPy_Setup.exe
 #     - name: Lint with flake8
 #       run: |
 #         # stop the build if there are Python syntax errors or undefined names
