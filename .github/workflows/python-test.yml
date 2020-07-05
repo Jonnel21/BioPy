@@ -47,12 +47,19 @@ jobs:
 
     - name: Display structure of downloaded files
       run: dir
-      working-directory: src/dist
+      working-directory: src/dist/gui
         
     - name: Compile iss script
       run: ./iscc BioPy_Setup.iss
       working-directory: scripts
       shell: pwsh
+
+    - name: Sign setup.exe
+      uses: dlemstra/code-sign-action@v1
+      with:
+        certificate: '${{ secrets.CERTIFICATE }}'
+        folder: 'src\dist\gui\setup\mysetup.exe'
+        recursive: false
 
     - name: Upload setup.exe artifact
       uses: actions/upload-artifact@v2
