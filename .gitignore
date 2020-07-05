@@ -1,6 +1,5 @@
 *.pdf
 *.csv
-*.txt
 *.bin
 *.dat
 .vscode
