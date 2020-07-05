@@ -33,17 +33,17 @@ jobs:
       run: pyinstaller gui.spec
       working-directory: src
 
-    - name: Upload pyinstaller artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: test
-        path: src/dist
+    # - name: Upload pyinstaller artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: test
+    #     path: src/dist
 
-    - name: Download pyinstaller artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: test
-        path: src/dist
+    # - name: Download pyinstaller artifact
+    #   uses: actions/download-artifact@v2
+    #   with:
+    #     name: test
+    #     path: src/dist
 
     - name: Display structure of downloaded files
       run: dir
