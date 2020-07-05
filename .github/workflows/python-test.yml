@@ -29,18 +29,15 @@ jobs:
       run: |
         pyinstaller gui.spec
       working-directory: src
-
     - uses: actions/upload-artifact@v2
       with:
         name: test
         path: src/dist
-
     - name: Download artifact
     - uses: actions/download-artifact@v2
       with:
         name: test
         path: src/dist
-
     - name: Display structure of downloaded files
       run: dir
       working-directory: src/dist
