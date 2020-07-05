@@ -34,6 +34,17 @@ jobs:
       with:
         name: test
         path: src/dist
+
+    - name: Download artifact
+    - uses: actions/download-artifact@v2
+      with:
+        name: test
+        path: src/dist
+
+    - name: Display structure of downloaded files
+      run: dir
+      working-directory: src/dist
+        
 #     - name: Compile iss script
 #       run: ./iscc BioPy_Setup.iss
 #       working-directory: scripts
