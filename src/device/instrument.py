@@ -2,11 +2,14 @@ import os
 import subprocess
 import shutil
 import re
-import sys
 import pandas as pd
 from peak import Peak
 
+
 class InstrumentStrategy():
+
+    def __init__(self):
+        self.temp_dir = 'C:/BioPy_Temp'
 
     def convert_pdf(self, pdf_tuples: tuple):
         print(pdf_tuples)
@@ -24,19 +27,19 @@ class InstrumentStrategy():
         '''
 
         try:
-            os.mkdir('txt_files')
+            os.mkdir(self.temp_dir)
         except FileExistsError:
-            shutil.rmtree('txt_files')
-            os.mkdir('txt_files')
+            shutil.rmtree(self.temp_dir)
+            os.mkdir(self.temp_dir)
 
         for i in pdf_tuples:
             tmp_arr = i.split('/')
             pdf_file = tmp_arr[len(tmp_arr) - 1]
-            name = os.path.splitext(pdf_file)[0] # returns filename without extenstion
-            with open(f"./txt_files/{name}.txt", 'x') as file:
+            name = os.path.splitext(pdf_file)[0]  # returns name without ext
+            with open(f"{self.temp_dir}/{name}.txt", 'x') as file:
                 subprocess.run([pdftotext_path, '-simple', f'{i}', '-'], stdout=file)
                 file.close()
-            
+
     def wrapper_decode(self, arr: list):
 
         '''
@@ -53,7 +56,7 @@ class InstrumentStrategy():
         for a in arr:
             newarr.append(a.decode())
         return newarr
-    
+
     def rename_unknown(self, lst: list):
 
         ''' Searches for \"Unknowns\" in the list.
@@ -65,19 +68,21 @@ class InstrumentStrategy():
 
             Parameters:
                 lst: list
-            
+
             Returns:
                 "List is empty."
                 or
                 "There are no Unknowns in the list."
         '''
-        if(len(lst) == 0): return "List is empty."
+        if(len(lst) == 0):
+            return "List is empty."
 
         if(Peak.UNKNOWN.value in lst):
             num_unknown = lst.count(Peak.UNKNOWN.value)
             for i in range(num_unknown):
                 lst[lst.index("Unknown")] += str(i+1)
-        else: return "There are no %ss in the list." % Peak.UNKNOWN.value
+        else:
+            return "There are no %ss in the list." % Peak.UNKNOWN.value
 
     def to_nested(self, table: list):
 
@@ -86,7 +91,7 @@ class InstrumentStrategy():
 
         A peak list consists of:
         peak name, retention time, height, area, area percent
-        
+
         The list may contain multiple peak names each consisting of their
         respective retention time, height, area, and area percent.
 
@@ -133,14 +138,15 @@ class InstrumentStrategy():
             return -1
         elif(unknown_match):
             return 1
-        else: return 0
-    
+        else:
+            return 0
+
     def map_to_dictionary(self, nested_list: list):
 
         '''
         Converts a nested list of peaks into a dictionary.
 
-        e.g. 
+        e.g.
         [['A1a', '0.20', '14061', '55103', '1.4'],
          ['A1b', '0.27', '24345', '117458', '3.0'],
          ['F', '0.49', '2183', '24521', '<0.8*'],
@@ -153,38 +159,37 @@ class InstrumentStrategy():
 
          Parameters:
             nested_list: list
-        
+
         Returns:
             real_dict: dict
         '''
-        header_index = 0
         peak_index = 0
         real_dict = {}
         for i, e in enumerate(nested_list):
             if(i == 0):
-                key_sampleID = "Sample_ID" 
-                key_date = "Date" 
+                key_sampleID = "Sample_ID"
+                key_date = "Date"
                 key_time = "Time"
                 key_injection = "Inj #"
                 key_rack = "Rack #"
                 key_rackpos = "Rack Position"
                 real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
-                                (key_date, e[Peak.DATE.value]),
-                                (key_time, e[Peak.TIME.value] ),
-                                (key_injection, e[Peak.INJ.value]), 
-                                (key_rack, e[Peak.RACK.value]),
-                                (key_rackpos, e[Peak.RACKPOS.value])])
+                                 (key_date, e[Peak.DATE.value]),
+                                 (key_time, e[Peak.TIME.value]),
+                                 (key_injection, e[Peak.INJ.value]),
+                                 (key_rack, e[Peak.RACK.value]),
+                                 (key_rackpos, e[Peak.RACKPOS.value])])
                 continue
 
-            key_rtime = "%s_rtime" % e[peak_index] # key retention time
-            key_height = "%s_height" % e[peak_index] # key height
-            key_area = "%s_area" % e[peak_index] # key area
-            key_areap = "%s_areap" % e[peak_index] # key area percent
+            key_rtime = "%s_rtime" % e[peak_index]  # key retention time
+            key_height = "%s_height" % e[peak_index]  # key height
+            key_area = "%s_area" % e[peak_index]  # key area
+            key_areap = "%s_areap" % e[peak_index]  # key area percent
 
-            real_dict.update([(key_rtime, e[Peak.RTIME.value]), 
-                            (key_height, e[Peak.HEIGHT.value]),
-                            (key_area, e[Peak.AREA.value]), 
-                            (key_areap, e[Peak.AREAP.value])])
+            real_dict.update([(key_rtime, e[Peak.RTIME.value]),
+                             (key_height, e[Peak.HEIGHT.value]),
+                             (key_area, e[Peak.AREA.value]),
+                             (key_areap, e[Peak.AREAP.value])])
         print(real_dict)
         return real_dict
 
@@ -197,20 +202,20 @@ class InstrumentStrategy():
 
         Parameters:
             save_location: str
-        
+
         Returns:
             None
         '''
 
         # Empty dataframe
         df = pd.DataFrame()
-        with os.scandir('txt_files') as it:
+        with os.scandir(self.temp_dir) as it:
             for entry in it:
                 df = df.append(self.parse_text(entry), ignore_index=True)
 
         # sort headers & save to csv file format
         header_list = list(df.columns.values)
-        sorted_header_list = sorted(header_list, key= lambda x:self.sort_headers(x))
+        sorted_header_list = sorted(header_list, key=lambda x: self.sort_headers(x))
         df2 = df.reindex(columns=sorted_header_list)
         df2.to_csv(save_location, index=False)
-        shutil.rmtree('txt_files')
+        shutil.rmtree(self.temp_dir)
