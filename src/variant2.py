@@ -1,4 +1,4 @@
-from src.device.instrument import InstrumentStrategy
+from device.instrument import InstrumentStrategy
 
 
 class VariantStrategy(InstrumentStrategy):
