@@ -1,6 +1,8 @@
 from device.instrument import InstrumentStrategy
+
+
 class D10Strategy(InstrumentStrategy):
-    
+
     def parse_text(self, txt_file: str):
 
         '''
@@ -50,10 +52,10 @@ class D10Strategy(InstrumentStrategy):
             injection_index = decoded_arr.index('D-10') - 1
             racknum_index = decoded_arr.index('Rack') + 2
             rackpos_index = decoded_arr.index('Bio-Rad') - 1
-        
+
             # peak table indicies for D-10 only
-            start = decoded_arr.index('%') # inclusive
-            end = decoded_arr.index('Total') # exclusive
+            start = decoded_arr.index('%')  # inclusive
+            end = decoded_arr.index('Total')  # exclusive
 
             info_table.append(decoded_arr[sampleid_index])
             info_table.append(decoded_arr[date_index])
