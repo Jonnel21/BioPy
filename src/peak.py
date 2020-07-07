@@ -10,4 +10,5 @@ class Peak(Enum):
     INJ = 3
     RACK = 4
     RACKPOS = 5
+    TOTALAREA = 6
     UNKNOWN = "Unknown"

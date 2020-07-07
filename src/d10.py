@@ -35,7 +35,7 @@ class D10Strategy(InstrumentStrategy):
                     temp_arr = decoded_arr[asterisk_index - 1 : asterisk_index + 1]
                     temp = "".join(temp_arr)
                     decoded_arr.insert(asterisk_index - 1, temp)
-                    del decoded_arr[asterisk_index - 1 : asterisk_index + 1]
+                    del decoded_arr[decoded_arr.index('Area:') + 2 : decoded_arr.index('Concentration:')]
             elif '<' in decoded_arr:
                 lessthan_index = decoded_arr.index('<')
                 value_index = decoded_arr.index('<') + 1
@@ -52,6 +52,7 @@ class D10Strategy(InstrumentStrategy):
             injection_index = decoded_arr.index('D-10') - 1
             racknum_index = decoded_arr.index('Rack') + 2
             rackpos_index = decoded_arr.index('Bio-Rad') - 1
+            total_area_index = decoded_arr.index('Area:') + 1
 
             # peak table indicies for D-10 only
             start = decoded_arr.index('%')  # inclusive
@@ -63,6 +64,7 @@ class D10Strategy(InstrumentStrategy):
             info_table.append(decoded_arr[injection_index])
             info_table.append(decoded_arr[racknum_index])
             info_table.append(decoded_arr[rackpos_index])
+            info_table.append(decoded_arr[total_area_index])
 
             peak_table = decoded_arr[start + 1: end]
 

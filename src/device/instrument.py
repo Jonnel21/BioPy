@@ -16,6 +16,7 @@ class InstrumentStrategy():
         # meipass_path = sys._MEIPASS
         # pdftotext_path = os.path.join(meipass_path, 'pdftotext')
         pdftotext_path = './pdftotext'
+        # pdftotext_path = '.\BioPy\src\pdftotext'
         '''
         Takes a pdf file and converts it to a txt file.
 
@@ -133,7 +134,7 @@ class InstrumentStrategy():
         '''
 
         unknown_match = re.search('^Unknown\d', x)
-        info_match = re.match('Sample|Date|Time|Inj|Rack', x)
+        info_match = re.match('Sample|Date|Time|Inj|Rack|Total Hb Area', x)
         if(info_match):
             return -1
         elif(unknown_match):
@@ -173,12 +174,14 @@ class InstrumentStrategy():
                 key_injection = "Inj #"
                 key_rack = "Rack #"
                 key_rackpos = "Rack Position"
+                key_total_area = "Total Hb Area"
                 real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
                                  (key_date, e[Peak.DATE.value]),
                                  (key_time, e[Peak.TIME.value]),
                                  (key_injection, e[Peak.INJ.value]),
                                  (key_rack, e[Peak.RACK.value]),
-                                 (key_rackpos, e[Peak.RACKPOS.value])])
+                                 (key_rackpos, e[Peak.RACKPOS.value]),
+                                 (key_total_area, e[Peak.TOTALAREA.value])])
                 continue
 
             key_rtime = "%s_rtime" % e[peak_index]  # key retention time
