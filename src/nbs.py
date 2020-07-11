@@ -24,6 +24,9 @@ class NbsStrategy(InstrumentStrategy):
             injection_index = decoded_arr.index('Injection') + 2
             racknum_index = decoded_arr.index('Well#:') + 1
             rackpos_index = decoded_arr.index('Position:') + 1
+            total_area_index = decoded_arr.index('Area:') + 1
+            pattern_index = decoded_arr.index('Pattern:') + 1
+
 
             # peak table indicies for VNBS only
             start = decoded_arr.index('(min)')  # inclusive
@@ -35,6 +38,8 @@ class NbsStrategy(InstrumentStrategy):
             info_table.append(decoded_arr[injection_index])
             info_table.append(decoded_arr[racknum_index])
             info_table.append(decoded_arr[rackpos_index])
+            info_table.append(decoded_arr[total_area_index])
+            info_table.append(decoded_arr[pattern_index])
 
             peak_table = decoded_arr[start + 1: end]
 

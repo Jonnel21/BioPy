@@ -1,4 +1,6 @@
 from enum import Enum
+
+
 class Peak(Enum):
     RTIME = 1
     HEIGHT = 2
@@ -11,4 +13,5 @@ class Peak(Enum):
     RACK = 4
     RACKPOS = 5
     TOTALAREA = 6
+    PATTERN = 7
     UNKNOWN = "Unknown"

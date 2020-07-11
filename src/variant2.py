@@ -18,6 +18,7 @@ class VariantStrategy(InstrumentStrategy):
             injection_index = decoded_arr.index('Name:') - 1
             racknum_index = decoded_arr.index('Physician:') - 1
             rackpos_index = decoded_arr.index('DOB:') - 1
+            total_area_index = decoded_arr.index('Area:') + 1
 
             # peak table indicies for Varient systems only
             start = decoded_arr.index('(min)') + 2  # inclusive
@@ -36,6 +37,7 @@ class VariantStrategy(InstrumentStrategy):
             info_table.append(decoded_arr[injection_index])
             info_table.append(decoded_arr[racknum_index])
             info_table.append(decoded_arr[rackpos_index])
+            info_table.append(decoded_arr[total_area_index])
 
             peak_table = decoded_arr[start: end]
 
