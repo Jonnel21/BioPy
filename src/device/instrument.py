@@ -14,8 +14,8 @@ class InstrumentStrategy():
     def convert_pdf(self, pdf_tuples: tuple):
         print(pdf_tuples)
 
-        pdftotext_path = 'C:/Users/Jonnel/Documents/BioPy/src/pdftotext.exe'  # use this path for build
-        # pdftotext_path = '.\\BioPy\\src\\pdftotext'
+        # pdftotext_path = './src/pdftotext.exe'  # use this path for build
+        pdftotext_path = './pdftotext'
         '''
         Takes a pdf file and converts it to a txt file.
 

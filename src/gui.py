@@ -8,6 +8,7 @@ from contextManager import ContextManager
 from d10 import D10Strategy
 from variant2 import VariantStrategy
 from nbs import NbsStrategy
+import os
 import queue
 import tkinter.filedialog as fd
 
@@ -58,7 +59,7 @@ class Window:
 
         self.testButton = tkinter.Button(self.container1,
                                          text='Automated_Test',
-                                         command=self.onTestClick)
+                                         command=self.onAutomatedTestClick)
         # self.testButton.pack()
 
         self.progressbar = ttk.Progressbar(self.container1, value=0,
@@ -125,6 +126,29 @@ class Window:
             self.t1 = self.myThread(self.q, files,
                                     self.csv_filename, self.manager)
             self.progressbar.start(20)
+            self.t1.start()
+            self.testButton['state'] = tkinter.DISABLED
+            self.parent.after(1000, self.checkQ)
+
+    def onAutomatedTestClick(self):
+        vnbs_directory = 'C:/Users/Jonnel/Desktop/BioPy/pdf/vnbs/'
+        with os.scandir(vnbs_directory) as it:
+            for entry in it:
+                temp = os.path.join(vnbs_directory, entry.name)
+                self.listbox1.insert(tkinter.END, temp)
+        files = self.listbox1.get(0, tkinter.END)
+        self.csv_filename = 'C:/Users/Jonnel/Desktop/TEST.csv'
+        self.manager.set(NbsStrategy())
+
+        if len(files) == 0:
+            messagebox.showerror('Error', 'Files not found.')
+        elif len(self.csv_filename) == 0:
+            messagebox.showerror('Error', 'Save location is empty.')
+        else:
+            self.progressbar.pack()
+            self.t1 = self.myThread(self.q, files,
+                                    self.csv_filename, self.manager)
+            # self.progressbar.start(20)
             self.t1.start()
             self.testButton['state'] = tkinter.DISABLED
             self.parent.after(1000, self.checkQ)
