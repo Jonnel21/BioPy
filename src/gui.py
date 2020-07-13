@@ -138,14 +138,19 @@ class Window:
             self.parent.after(1000, self.checkQ)
 
     def onAutomatedTestClick(self):
-        vnbs_directory = 'C:/Users/Jonnel/Desktop/BioPy/pdf/vnbs/'
-        with os.scandir(vnbs_directory) as it:
+        vnbs = 'vnbs'
+        d10 = 'd10'
+        variant = 'variant'
+        directory = f'C:/Users/Jonnel/Desktop/BioPy/pdf/{variant}/'
+        with os.scandir(directory) as it:
             for entry in it:
-                temp = os.path.join(vnbs_directory, entry.name)
+                temp = os.path.join(directory, entry.name)
                 self.listbox1.insert(tkinter.END, temp)
         files = self.listbox1.get(0, tkinter.END)
         self.csv_filename = 'C:/Users/Jonnel/Desktop/TEST.csv'
-        self.manager.set(NbsStrategy())
+        # self.manager.set(NbsStrategy())
+        # self.manager.set(D10Strategy())
+        self.manager.set(VariantStrategy())
 
         if len(files) == 0:
             messagebox.showerror('Error', 'Files not found.')

@@ -14,7 +14,8 @@ class InstrumentStrategy():
     def convert_pdf(self, pdf_tuples: tuple):
         print(pdf_tuples)
 
-        # pdftotext_path = './src/pdftotext.exe'  # use this path for build
+        # pdftotext_path = './src/pdftotext.exe'
+        # pdftotext_path = '.\pdftotext.exe'
         pdftotext_path = './pdftotext'
         '''
         Takes a pdf file and converts it to a txt file.
@@ -184,7 +185,7 @@ class InstrumentStrategy():
                                      (key_rackpos, e[Peak.RACKPOS.value]),
                                      (key_total_area, e[Peak.TOTALAREA.value]),
                                      (key_pattern, e[Peak.PATTERN.value])])
-                continue
+                
                 key_sampleID = "Sample_ID"
                 key_date = "Date"
                 key_time = "Time"
