@@ -33,7 +33,14 @@ class Window:
         self.optionContainter.pack(anchor=tkinter.E)
 
         self.listbox1 = tkinter.Listbox(self.container1)
-        self.listbox1.configure(width=100, height=20)
+
+        self.scrollbar = tkinter.Scrollbar(self.container1)
+        self.scrollbar.configure(command=self.listbox1.yview)
+        self.scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+
+        self.listbox1.configure(width=100,
+                                height=20,
+                                yscrollcommand=self.scrollbar.set)
         self.listbox1.pack(fill=tkinter.BOTH, expand=1)
 
         self.browseButton = tkinter.Button(self.container1, text='Browse',

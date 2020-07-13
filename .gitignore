@@ -4,6 +4,8 @@
 *.dat
 .vscode
 .venv
+dev
+production
 __pycache__
 xpdf_python/
 Result
