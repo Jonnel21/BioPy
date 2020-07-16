@@ -1,4 +1,5 @@
 from device.instrument import InstrumentStrategy
+from peak import Peak
 
 
 class NbsStrategy(InstrumentStrategy):
@@ -51,3 +52,61 @@ class NbsStrategy(InstrumentStrategy):
             test_dict = self.map_to_dictionary(nested_table)
             f.close()
         return test_dict
+
+    def map_to_dictionary(self, nested_list: list):
+
+        '''
+        Converts a nested list of peaks into a dictionary.
+
+        e.g.
+        [['A1a', '0.20', '14061', '55103', '1.4'],
+         ['A1b', '0.27', '24345', '117458', '3.0'],
+         ['F', '0.49', '2183', '24521', '<0.8*'],
+         ['LA1c/CHb-1', '0.69', '5293', '32276', '0.8']]
+         ------------------------------------------------
+        {'A1a_rtime': '0.20', 'A1a_height': '14061', 'A1a_area': '55103', 'A1a_areap': '1.4',
+         'A1b_rtime': '0.27', 'A1b_height': '24345', 'A1b_area': '117458', 'A1b_areap': '3.0',
+         'F_rtime': '0.49', 'F_height': '2183', 'F_area': '24521', 'F_areap': '<0.8*',
+         'LA1c/CHb-1_rtime': '0.69', 'LA1c/CHb-1_height': '5293', 'LA1c/CHb-1_area': '32276', 'LA1c/CHb-1_areap': '0.8'}
+
+         Parameters:
+            nested_list: list
+
+        Returns:
+            real_dict: dict
+        '''
+        peak_index = 0
+        real_dict = {}
+        for i, e in enumerate(nested_list):
+            if(i == 0):
+                key_sampleID = "Sample_ID"
+                key_date = "Date"
+                key_time = "Time"
+                key_injection = "Inj #"
+                key_rack = "Rack #"
+                key_rackpos = "Rack Position"
+                key_total_area = "Total Hb Area"
+                key_pattern = "Pattern"
+                real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
+                                  (key_date, e[Peak.DATE.value]),
+                                  (key_time, e[Peak.TIME.value]),
+                                  (key_injection, e[Peak.INJ.value]),
+                                  (key_rack, e[Peak.RACK.value]),
+                                  (key_rackpos, e[Peak.RACKPOS.value]),
+                                  (key_total_area, e[Peak.TOTALAREA.value]),
+                                  (key_pattern, e[Peak.PATTERN.value])])
+
+                continue
+
+            key_rtime = "%s_rtime" % e[peak_index]  # key retention time
+            key_height = "%s_height" % e[peak_index]  # key height
+            key_area = "%s_area" % e[peak_index]  # key area
+            key_areap = "%s_areap" % e[peak_index]  # key area percent
+
+            real_dict.update([(key_rtime, e[Peak.RTIME.value]),
+                             (key_height, e[Peak.HEIGHT.value]),
+                             (key_area, e[Peak.AREA.value]),
+                             (key_areap, e[Peak.AREAP.value])])
+
+        print(real_dict)
+        return real_dict

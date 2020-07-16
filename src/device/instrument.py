@@ -15,8 +15,8 @@ class InstrumentStrategy():
         print(pdf_tuples)
 
         # pdftotext_path = './src/pdftotext.exe'
-        # pdftotext_path = '.\pdftotext.exe'
-        pdftotext_path = './pdftotext'
+        # pdftotext_path = './src/pdftotext.exe'  # debug
+        pdftotext_path = './pdftotext'  # dev & build
         '''
         Takes a pdf file and converts it to a txt file.
 
@@ -52,11 +52,10 @@ class InstrumentStrategy():
         Returns:
             newarr: list
         '''
-
-        newarr = []
+        decoded_arr = []
         for a in arr:
-            newarr.append(a.decode())
-        return newarr
+            decoded_arr.append(a.decode())
+        return decoded_arr
 
     def rename_unknown(self, lst: list):
 
@@ -134,85 +133,13 @@ class InstrumentStrategy():
         '''
 
         unknown_match = re.search('^Unknown\d', x)
-        info_match = re.match('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern|FAST_*', x)
+        info_match = re.match('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern', x)
         if(info_match):
             return -1
         elif(unknown_match):
             return 1
         else:
             return 0
-
-    def map_to_dictionary(self, nested_list: list):
-
-        '''
-        Converts a nested list of peaks into a dictionary.
-
-        e.g.
-        [['A1a', '0.20', '14061', '55103', '1.4'],
-         ['A1b', '0.27', '24345', '117458', '3.0'],
-         ['F', '0.49', '2183', '24521', '<0.8*'],
-         ['LA1c/CHb-1', '0.69', '5293', '32276', '0.8']]
-         ------------------------------------------------
-        {'A1a_rtime': '0.20', 'A1a_height': '14061', 'A1a_area': '55103', 'A1a_areap': '1.4',
-         'A1b_rtime': '0.27', 'A1b_height': '24345', 'A1b_area': '117458', 'A1b_areap': '3.0',
-         'F_rtime': '0.49', 'F_height': '2183', 'F_area': '24521', 'F_areap': '<0.8*',
-         'LA1c/CHb-1_rtime': '0.69', 'LA1c/CHb-1_height': '5293', 'LA1c/CHb-1_area': '32276', 'LA1c/CHb-1_areap': '0.8'}
-
-         Parameters:
-            nested_list: list
-
-        Returns:
-            real_dict: dict
-        '''
-        peak_index = 0
-        real_dict = {}
-        for i, e in enumerate(nested_list):
-            if(i == 0):
-                if(len(nested_list[0]) == 8):  # check for a pattern value
-                    key_sampleID = "Sample_ID"
-                    key_date = "Date"
-                    key_time = "Time"
-                    key_injection = "Inj #"
-                    key_rack = "Rack #"
-                    key_rackpos = "Rack Position"
-                    key_total_area = "Total Hb Area"
-                    key_pattern = "Pattern"
-                    real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
-                                     (key_date, e[Peak.DATE.value]),
-                                     (key_time, e[Peak.TIME.value]),
-                                     (key_injection, e[Peak.INJ.value]),
-                                     (key_rack, e[Peak.RACK.value]),
-                                     (key_rackpos, e[Peak.RACKPOS.value]),
-                                     (key_total_area, e[Peak.TOTALAREA.value]),
-                                     (key_pattern, e[Peak.PATTERN.value])])
-                
-                key_sampleID = "Sample_ID"
-                key_date = "Date"
-                key_time = "Time"
-                key_injection = "Inj #"
-                key_rack = "Rack #"
-                key_rackpos = "Rack Position"
-                key_total_area = "Total Hb Area"
-                real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
-                                 (key_date, e[Peak.DATE.value]),
-                                 (key_time, e[Peak.TIME.value]),
-                                 (key_injection, e[Peak.INJ.value]),
-                                 (key_rack, e[Peak.RACK.value]),
-                                 (key_rackpos, e[Peak.RACKPOS.value]),
-                                 (key_total_area, e[Peak.TOTALAREA.value])])
-                continue
-
-            key_rtime = "%s_rtime" % e[peak_index]  # key retention time
-            key_height = "%s_height" % e[peak_index]  # key height
-            key_area = "%s_area" % e[peak_index]  # key area
-            key_areap = "%s_areap" % e[peak_index]  # key area percent
-
-            real_dict.update([(key_rtime, e[Peak.RTIME.value]),
-                             (key_height, e[Peak.HEIGHT.value]),
-                             (key_area, e[Peak.AREA.value]),
-                             (key_areap, e[Peak.AREAP.value])])
-        print(real_dict)
-        return real_dict
 
     def build_csv(self, save_location: str):
 
@@ -237,6 +164,11 @@ class InstrumentStrategy():
         # sort headers & save to csv file format
         header_list = list(df.columns.values)
         sorted_header_list = sorted(header_list, key=lambda x: self.sort_headers(x))
-        df2 = df.reindex(columns=sorted_header_list)
+        end_index = sorted_header_list.index('Total Hb Area') + 1
+        info_header = sorted_header_list[0:end_index]
+        peak_header = sorted_header_list[end_index:]
+        sorted_peak_header = sorted(peak_header)
+        final_headers = info_header + sorted_peak_header
+        df2 = df.reindex(columns=final_headers)
         df2.to_csv(save_location, index=False)
         shutil.rmtree(self.temp_dir)

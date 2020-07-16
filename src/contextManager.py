@@ -1,4 +1,6 @@
 from device.instrument import InstrumentStrategy
+
+
 class ContextManager:
 
     """
@@ -6,7 +8,7 @@ class ContextManager:
         strategy based on the three options given to
         the user.
     """
-    
+
     def __init__(self, strategy=None):
         self.strategy = strategy
 
@@ -15,4 +17,3 @@ class ContextManager:
 
     def get(self):
         return self.strategy
-    

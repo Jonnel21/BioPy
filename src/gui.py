@@ -67,7 +67,7 @@ class Window:
         self.testButton = tkinter.Button(self.container1,
                                          text='Automated_Test',
                                          command=self.onAutomatedTestClick)
-        # self.testButton.pack()
+        self.testButton.pack()
 
         self.progressbar = ttk.Progressbar(self.container1, value=0,
                                            orient=tkinter.HORIZONTAL,
@@ -141,16 +141,16 @@ class Window:
         vnbs = 'vnbs'
         d10 = 'd10'
         variant = 'variant'
-        directory = f'C:/Users/Jonnel/Desktop/BioPy/pdf/{variant}/'
+        directory = f'C:/Users/Jonnel/Documents/pdf/{vnbs}/'
         with os.scandir(directory) as it:
             for entry in it:
                 temp = os.path.join(directory, entry.name)
                 self.listbox1.insert(tkinter.END, temp)
         files = self.listbox1.get(0, tkinter.END)
         self.csv_filename = 'C:/Users/Jonnel/Desktop/TEST.csv'
-        # self.manager.set(NbsStrategy())
+        self.manager.set(NbsStrategy())
         # self.manager.set(D10Strategy())
-        self.manager.set(VariantStrategy())
+        # self.manager.set(VariantStrategy())
 
         if len(files) == 0:
             messagebox.showerror('Error', 'Files not found.')
