@@ -34,3 +34,7 @@ class Peak(Enum):
     V2_AREA = 4
 
     UNKNOWN = "Unknown"
+
+    CONTROL = "CONTROL"
+    PATIENT = "Patient"
+    CALIBRATE = "Calibration"

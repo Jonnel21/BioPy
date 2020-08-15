@@ -133,7 +133,7 @@ class InstrumentStrategy():
         '''
 
         unknown_match = re.search('^Unknown\d', x)
-        info_match = re.match('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern', x)
+        info_match = re.match('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern|Well|Plate|Tube|Run|Lot|Expiration', x)
         if(info_match):
             return -1
         elif(unknown_match):
@@ -172,3 +172,21 @@ class InstrumentStrategy():
         df2 = df.reindex(columns=final_headers)
         df2.to_csv(save_location, index=False)
         shutil.rmtree(self.temp_dir)
+
+    def sort_info_headers(self, header_list):
+        update_list = []
+        test = ["Date," "Inj #", "Pattern", "Plate Position", "Sample_ID", "Time", "Total Hb Area"]
+        headers = {
+            "0": "Date",
+            "1": "Time",
+            "2": "Inj #",
+            "3": "Rack #",
+            "7": "Total Hb Area"
+        }
+
+        if "Pattern" in test:
+            headers.update({"4": "Pattern", "5": "Plate Position", "6": "Well #"})
+            temp = sorted(headers.items())
+            for i in range(len(temp)):
+                update_list.append(temp[i][1])
+        print(update_list)

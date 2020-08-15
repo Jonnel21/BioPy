@@ -14,7 +14,7 @@ class NbsStrategy(InstrumentStrategy):
             decoded_arr = self.wrapper_decode(arr)
 
             # delete peak numbers that appear in VNBS
-            peak_start = decoded_arr.index('1')
+            peak_start = decoded_arr.index('(min)') + 1
             peak_end = decoded_arr.index('Pattern:') - offset
             del decoded_arr[peak_start: peak_end: 6]
 
@@ -83,8 +83,8 @@ class NbsStrategy(InstrumentStrategy):
                 key_date = "Date"
                 key_time = "Time"
                 key_injection = "Inj #"
-                key_rack = "Rack #"
-                key_rackpos = "Rack Position"
+                key_rack = "Well #"
+                key_rackpos = "Plate Position"
                 key_total_area = "Total Hb Area"
                 key_pattern = "Pattern"
                 real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),

@@ -67,7 +67,7 @@ class Window:
         self.testButton = tkinter.Button(self.container1,
                                          text='Automated_Test',
                                          command=self.onAutomatedTestClick)
-        self.testButton.pack()
+        # self.testButton.pack()
 
         self.progressbar = ttk.Progressbar(self.container1, value=0,
                                            orient=tkinter.HORIZONTAL,
