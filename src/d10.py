@@ -4,6 +4,25 @@ from peak import Peak
 
 class D10Strategy(InstrumentStrategy):
 
+    def whichVersion(self, nested_list):
+        if '5.00-2' in nested_list:
+            return '5.00-2'
+        elif '4.30-2' in nested_list:
+            return '4.30-2'
+        else:
+            return '-1'
+
+    def isControl(self, nested_list):
+
+        '''
+        Helper method to determine if the list is a Control
+        '''
+
+        if(Peak.CONTROL.value in nested_list):
+            return True
+        else:
+            return False 
+
     def parse_text(self, txt_file: str):
 
         '''

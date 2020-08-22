@@ -145,7 +145,7 @@ class VariantStrategy(InstrumentStrategy):
                 key_date = "Date"
                 key_time = "Time"
                 key_injection = "Inj #"
-                key_rack = "Rack #"
+                key_rack = "Rack ID"
                 key_rackpos = "Rack Position"
                 key_total_area = "Total Hb Area"
                 real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
@@ -213,7 +213,7 @@ class VariantStrategy(InstrumentStrategy):
                 key_date = "Date"
                 key_time = "Time"
                 key_injection = "Inj #"
-                key_run = "Run #"
+                key_run = "Run ID"
                 key_tube = "Tube #"
                 key_total_area = "Total Hb Area"
                 real_dict.update([(key_lot, e[0]),
