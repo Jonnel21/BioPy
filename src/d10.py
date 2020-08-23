@@ -66,12 +66,23 @@ class D10Strategy(InstrumentStrategy):
                 pass
 
             # info table indicies
+
+            if self.whichVersion(decoded_arr) == '4.30-2':
+                racknum_index = decoded_arr.index('Rack') + 2
+                injection_index = decoded_arr.index('Method:') - 1 # 4.30-2
+                rackpos_index = racknum_index + 3 # 4.30-2
+            else:
+                injection_index = decoded_arr.index('D-10') - 1
+                rackpos_index = decoded_arr.index('Bio-Rad') - 1
+
             sampleid_index = decoded_arr.index('ID:') + 1
             date_index = decoded_arr.index('date') + 1
             time_index = date_index + 1
-            injection_index = decoded_arr.index('D-10') - 1
+            # injection_index = decoded_arr.index('D-10') - 1
+            # injection_index = decoded_arr.index('Method:') - 1 # 4.30-2
             racknum_index = decoded_arr.index('Rack') + 2
-            rackpos_index = decoded_arr.index('Bio-Rad') - 1
+            # rackpos_index = decoded_arr.index('Bio-Rad') - 1
+            # rackpos_index = racknum_index + 3 # 4.30-2
             total_area_index = decoded_arr.index('Area:') + 1
 
             # peak table indicies for D-10 only
