@@ -128,6 +128,8 @@ class Window:
             messagebox.showerror('Error', 'Files not found.')
         elif len(self.csv_filename) == 0:
             messagebox.showerror('Error', 'Save location is empty.')
+        elif self.radioOption.get() == "0":
+            messagebox.showerror('Error', 'Please select an instrument family.')
         else:
             self.progressbar.pack()
             self.t1 = self.myThread(self.q, files,
