@@ -18,10 +18,60 @@ class D10Strategy(InstrumentStrategy):
         Helper method to determine if the list is a Control
         '''
 
-        if(Peak.CONTROL.value in nested_list):
+        if('Control' in nested_list):
             return True
         else:
-            return False 
+            return False
+
+    def checkEdgeCase(self, decoded_arr):
+        if '*' in decoded_arr:
+            while '*' in decoded_arr:    
+                asterisk_index = decoded_arr.index('*')
+                if decoded_arr[asterisk_index - 2] == '<':
+                    lessthan_index = decoded_arr.index('<')
+                    temp = "".join(decoded_arr[lessthan_index : asterisk_index + 1])
+                    decoded_arr.insert(lessthan_index, temp)
+                    del decoded_arr[decoded_arr.index('<') : decoded_arr.index('*') + 1]
+                else:
+                    temp_arr = decoded_arr[asterisk_index - 1 : asterisk_index + 1]
+                    temp = "".join(temp_arr)
+                    decoded_arr.insert(asterisk_index - 1, temp)
+                    del decoded_arr[decoded_arr.index(temp, asterisk_index - 1, asterisk_index + 2) + 1 : decoded_arr.index(temp, asterisk_index - 1, asterisk_index + 2) + 3]
+        elif '<' in decoded_arr:
+            lessthan_index = decoded_arr.index('<')
+            value_index = decoded_arr.index('<') + 1
+            temp = "".join(decoded_arr[lessthan_index : value_index + 1])
+            decoded_arr.insert(lessthan_index, temp)
+            del decoded_arr[decoded_arr.index('<') : decoded_arr.index('<') + 2]
+        else:
+            pass
+
+    def create_control_table_43(self, decoded_arr, info_table):
+
+        '''
+
+        Parses the control 4.30-2 reports
+
+        '''
+        lot_id_index = decoded_arr.index('R.time') - 2
+        lot_index = decoded_arr.index('Injection') - 1
+        injection_date_index = lot_index + 3
+        injection_time_index = injection_date_index + 1
+        injection_index = decoded_arr.index('Method:') - 1
+        racknum_index = decoded_arr.index('Rack') + 2
+        rackpos_index = racknum_index + 3
+        total_area_index = decoded_arr.index('Area:') + 1
+
+        info_table.append(decoded_arr[lot_id_index])
+        info_table.append(decoded_arr[lot_index])
+        info_table.append(decoded_arr[injection_date_index])
+        info_table.append(decoded_arr[injection_time_index])
+        info_table.append(decoded_arr[injection_index])
+        info_table.append(decoded_arr[racknum_index])
+        info_table.append(decoded_arr[rackpos_index])
+        info_table.append(decoded_arr[total_area_index])
+
+        return info_table
 
     def parse_text(self, txt_file: str):
 
@@ -37,52 +87,45 @@ class D10Strategy(InstrumentStrategy):
 
         arr = []
         with open(txt_file, 'rb') as f:
+
             info_table = []
             nested_table = []
             temp = ""
             arr = f.read().split()
             decoded_arr = self.wrapper_decode(arr)
 
-        # Checks for edge case characters
-            if '*' in decoded_arr:
-                asterisk_index = decoded_arr.index('*')
-                if decoded_arr[asterisk_index - 2] == '<':
-                    lessthan_index = decoded_arr.index('<')
-                    temp = "".join(decoded_arr[lessthan_index : asterisk_index + 1])
-                    decoded_arr.insert(lessthan_index, temp)
-                    del decoded_arr[decoded_arr.index('<') : decoded_arr.index('*') + 1]
-                else:
-                    temp_arr = decoded_arr[asterisk_index - 1 : asterisk_index + 1]
-                    temp = "".join(temp_arr)
-                    decoded_arr.insert(asterisk_index - 1, temp)
-                    del decoded_arr[decoded_arr.index('Area:') + 2 : decoded_arr.index('Concentration:')]
-            elif '<' in decoded_arr:
-                lessthan_index = decoded_arr.index('<')
-                value_index = decoded_arr.index('<') + 1
-                temp = "".join(decoded_arr[lessthan_index : value_index + 1])
-                decoded_arr.insert(lessthan_index, temp)
-                del decoded_arr[decoded_arr.index('<') : decoded_arr.index('<') + 2]
-            else:
-                pass
-
-            # info table indicies
+            self.checkEdgeCase(decoded_arr)
 
             if self.whichVersion(decoded_arr) == '4.30-2':
+                if(self.isControl(decoded_arr)):
+
+                    control_info = self.create_control_table_43(decoded_arr,
+                                                                info_table)
+                    start = decoded_arr.index('%')  # inclusive
+                    end = decoded_arr.index('Total')  # exclusive
+                    peak_table = decoded_arr[start + 1: end]
+
+                    # create nested list
+                    nested_table = self.to_nested(peak_table)
+                    nested_table.insert(0, control_info)
+
+                    # create dictionary
+                    test_dict = self.map_to_dictionarc(nested_table)
+                    f.close()
+                    return test_dict
+
+                injection_index = decoded_arr.index('Method:') - 1
                 racknum_index = decoded_arr.index('Rack') + 2
-                injection_index = decoded_arr.index('Method:') - 1 # 4.30-2
-                rackpos_index = racknum_index + 3 # 4.30-2
-            else:
+                rackpos_index = racknum_index + 3
+
+            if self.whichVersion(decoded_arr) == '5.00-2':
                 injection_index = decoded_arr.index('D-10') - 1
+                racknum_index = decoded_arr.index('Rack') + 2
                 rackpos_index = decoded_arr.index('Bio-Rad') - 1
 
             sampleid_index = decoded_arr.index('ID:') + 1
             date_index = decoded_arr.index('date') + 1
             time_index = date_index + 1
-            # injection_index = decoded_arr.index('D-10') - 1
-            # injection_index = decoded_arr.index('Method:') - 1 # 4.30-2
-            racknum_index = decoded_arr.index('Rack') + 2
-            # rackpos_index = decoded_arr.index('Bio-Rad') - 1
-            # rackpos_index = racknum_index + 3 # 4.30-2
             total_area_index = decoded_arr.index('Area:') + 1
 
             # peak table indicies for D-10 only
@@ -150,6 +193,63 @@ class D10Strategy(InstrumentStrategy):
                                  (key_rack, e[Peak.RACK.value]),
                                  (key_rackpos, e[Peak.RACKPOS.value]),
                                  (key_total_area, e[Peak.TOTALAREA.value])])
+                continue
+
+            key_rtime = "%s_rtime" % e[peak_index]  # key retention time
+            key_height = "%s_height" % e[peak_index]  # key height
+            key_area = "%s_area" % e[peak_index]  # key area
+            key_areap = "%s_areap" % e[peak_index]  # key area percent
+
+            real_dict.update([(key_rtime, e[Peak.RTIME.value]),
+                             (key_height, e[Peak.HEIGHT.value]),
+                             (key_area, e[Peak.AREA.value]),
+                             (key_areap, e[Peak.AREAP.value])])
+        print(real_dict)
+        return real_dict
+
+    def map_to_dictionarc(self, nested_list: list):
+        '''
+        Converts a nested list of peaks into a dictionary.
+
+        e.g.
+        [['A1a', '0.20', '14061', '55103', '1.4'],
+         ['A1b', '0.27', '24345', '117458', '3.0'],
+         ['F', '0.49', '2183', '24521', '<0.8*'],
+         ['LA1c/CHb-1', '0.69', '5293', '32276', '0.8']]
+         ------------------------------------------------
+        {'A1a_rtime': '0.20', 'A1a_height': '14061', 'A1a_area': '55103', 'A1a_areap': '1.4',
+         'A1b_rtime': '0.27', 'A1b_height': '24345', 'A1b_area': '117458', 'A1b_areap': '3.0',
+         'F_rtime': '0.49', 'F_height': '2183', 'F_area': '24521', 'F_areap': '<0.8*',
+         'LA1c/CHb-1_rtime': '0.69', 'LA1c/CHb-1_height': '5293', 'LA1c/CHb-1_area': '32276', 'LA1c/CHb-1_areap': '0.8'}
+
+         Parameters:
+            nested_list: list
+
+        Returns:
+            real_dict: dict
+        '''
+        # print("This is the name: %s" % self.name)
+        peak_index = 0
+        real_dict = {}
+        for i, e in enumerate(nested_list):
+            if(i == 0):
+
+                key_LotID = "Lot ID"
+                key_lot = "Lot #"
+                key_date = "Date"
+                key_time = "Time"
+                key_injection = "Inj #"
+                key_rack = "Rack #"
+                key_rackpos = "Rack Position"
+                key_total_area = "Total Hb Area"
+                real_dict.update([(key_LotID, e[0]),
+                                 (key_lot, e[1]),
+                                 (key_date, e[2]),
+                                 (key_time, e[3]),
+                                 (key_injection, e[4]),
+                                 (key_rack, e[5]),
+                                 (key_rackpos, e[6]),
+                                 (key_total_area, e[7])])
                 continue
 
             key_rtime = "%s_rtime" % e[peak_index]  # key retention time
