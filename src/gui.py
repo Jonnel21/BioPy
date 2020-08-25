@@ -40,7 +40,8 @@ class Window:
 
         self.listbox1.configure(width=100,
                                 height=20,
-                                yscrollcommand=self.scrollbar.set)
+                                yscrollcommand=self.scrollbar.set,
+                                selectmode=tkinter.EXTENDED)
         self.listbox1.pack(fill=tkinter.BOTH, expand=1)
 
         self.browseButton = tkinter.Button(self.container1, text='Browse',
@@ -51,6 +52,10 @@ class Window:
         self.clearAllButton = tkinter.Button(self.container1, text='Clear All',
                                              command=self.clearListBox)
         self.clearAllButton.pack(side=tkinter.RIGHT)
+
+        self.clearButton = tkinter.Button(self.container1, text='Clear',
+                                          command=self.clear)
+        self.clearButton.pack(side=tkinter.RIGHT)
 
         self.buildCsvButton = tkinter.Button(self.container1, text='Start!',
                                              command=self.onTestClick)
@@ -93,6 +98,9 @@ class Window:
                                            command=self.selectVNBS)
         self.option3.pack(anchor=tkinter.W)
 
+    def handleError(self, txt):
+        return messagebox.showerror('Error', txt)
+
     def selectD10Strat(self):
         self.manager.set(D10Strategy())
         print(f'you have selected {self.radioOption.get()}!')
@@ -115,6 +123,12 @@ class Window:
     def clearListBox(self):
         self.listbox1.delete(0, tkinter.END)
 
+    def clear(self):
+        indicies = self.listbox1.curselection()
+        for i, e in enumerate(reversed(indicies)):
+            self.listbox1.delete(e)
+
+
     def onButtonSaveClick(self):
         csv = [("csv", "*.csv|*.CSV"), ("All files", "*")]
         self.csv_filename = fd.asksaveasfilename(title='Save As',
@@ -125,11 +139,14 @@ class Window:
     def onTestClick(self):
         files = self.listbox1.get(0, tkinter.END)
         if len(files) == 0:
-            messagebox.showerror('Error', 'Files not found.')
+            # messagebox.showerror('Error', 'Files not found.')
+            self.handleError('Files not found!')
         elif len(self.csv_filename) == 0:
-            messagebox.showerror('Error', 'Save location is empty.')
+            # messagebox.showerror('Error', 'Save location is empty.')
+            self.handleError('Save location is empty!')
         elif self.radioOption.get() == "0":
-            messagebox.showerror('Error', 'Please select an instrument family.')
+            # messagebox.showerror('Error', 'Please select an instrument family.')
+            self.handleError('Please select an instrument family!')
         else:
             self.progressbar.pack()
             self.t1 = self.myThread(self.q, files,
