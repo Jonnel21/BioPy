@@ -9,7 +9,8 @@ from src.peak import Peak
 class InstrumentStrategy():
 
     def __init__(self):
-        self.temp_dir = 'C:/BioPy_Temp'
+        # self.temp_dir = 'C:/BioPy_Temp'  # local
+        self.temp_dir = 'D:/BioPy_Temp'  # build
 
     def convert_pdf(self, pdf_tuples: tuple):
         print(pdf_tuples)
