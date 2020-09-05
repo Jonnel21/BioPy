@@ -209,7 +209,7 @@ class VariantStrategy(InstrumentStrategy):
             if(i == 0):
 
                 key_lot = "Lot"
-                key_exp = "Exipration Date"
+                key_exp = "Expiration Date"
                 key_date = "Date"
                 key_time = "Time"
                 key_injection = "Inj #"

@@ -133,13 +133,13 @@ class InstrumentStrategy():
         '''
 
         unknown_match = re.search('^Unknown\d', x)
-        info_match = re.match('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern|Well|Plate|Tube|Run|Lot|Expiration', x)
+        info_match = re.match('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern|Well|Plate|Tube|Run|Lot|Expiration Date', x)
         if(info_match):
-            return -1
-        elif(unknown_match):
-            return 1
-        else:
             return 0
+        elif(unknown_match):
+            return 2
+        else:
+            return 1
 
     def build_csv(self, save_location: str):
 
@@ -164,12 +164,13 @@ class InstrumentStrategy():
         # sort headers & save to csv file format
         header_list = list(df.columns.values)
         sorted_header_list = sorted(header_list, key=lambda x: self.sort_headers(x))
-        end_index = sorted_header_list.index('Total Hb Area') + 1
-        info_header = sorted_header_list[0:end_index]
-        peak_header = sorted_header_list[end_index:]
-        sorted_peak_header = sorted(peak_header)
-        final_headers = info_header + sorted_peak_header
-        df2 = df.reindex(columns=final_headers)
+        # end_index = sorted_header_list.index('Total Hb Area') + 1
+        # info_header = sorted_header_list[0:end_index]
+        # peak_header = sorted_header_list[end_index:]
+        # sorted_peak_header = sorted(peak_header)
+        # final_headers = info_header + sorted_peak_header
+        # df2 = df.reindex(columns=final_headers)
+        df2 = df.reindex(columns=sorted_header_list)
         df2.to_csv(save_location, index=False)
         shutil.rmtree(self.temp_dir)
 

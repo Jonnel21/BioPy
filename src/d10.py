@@ -3,8 +3,17 @@ from peak import Peak
 
 
 class D10Strategy(InstrumentStrategy):
+    """ """
 
     def whichVersion(self, nested_list):
+        """
+
+        Args:
+          nested_list: 
+
+        Returns:
+
+        """
         if '5.00-2' in nested_list:
             return '5.00-2'
         elif '4.30-2' in nested_list:
@@ -14,9 +23,14 @@ class D10Strategy(InstrumentStrategy):
 
     def isControl(self, nested_list):
 
-        '''
-        Helper method to determine if the list is a Control
-        '''
+        """Helper method to determine if the list is a Control
+
+        Args:
+          nested_list: 
+
+        Returns:
+
+        """
 
         if('Control' in nested_list):
             return True
@@ -24,6 +38,14 @@ class D10Strategy(InstrumentStrategy):
             return False
 
     def checkEdgeCase(self, decoded_arr):
+        """
+
+        Args:
+          decoded_arr: 
+
+        Returns:
+
+        """
         if '*' in decoded_arr:
             while '*' in decoded_arr:    
                 asterisk_index = decoded_arr.index('*')
@@ -48,11 +70,15 @@ class D10Strategy(InstrumentStrategy):
 
     def create_control_table_43(self, decoded_arr, info_table):
 
-        '''
+        """Parses the control 4.30-2 reports
 
-        Parses the control 4.30-2 reports
+        Args:
+          decoded_arr: param info_table:
+          info_table: 
 
-        '''
+        Returns:
+
+        """
         lot_id_index = decoded_arr.index('R.time') - 2
         lot_index = decoded_arr.index('Injection') - 1
         injection_date_index = lot_index + 3
@@ -75,15 +101,19 @@ class D10Strategy(InstrumentStrategy):
 
     def parse_text(self, txt_file: str):
 
-        '''
-        Reads a txt file and saves the strings in a list.
-
+        """Reads a txt file and saves the strings in a list.
+        
             Parameter:
                 text_file_path: str
 
-            Returns:
-                decoded_arr: list
-        '''
+        Args:
+          txt_file: str:
+          txt_file: str: 
+
+        Returns:
+          decoded_arr: list
+
+        """
 
         arr = []
         with open(txt_file, 'rb') as f:
@@ -153,9 +183,8 @@ class D10Strategy(InstrumentStrategy):
 
     def map_to_dictionary(self, nested_list: list):
 
-        '''
-        Converts a nested list of peaks into a dictionary.
-
+        """Converts a nested list of peaks into a dictionary.
+        
         e.g.
         [['A1a', '0.20', '14061', '55103', '1.4'],
          ['A1b', '0.27', '24345', '117458', '3.0'],
@@ -166,13 +195,20 @@ class D10Strategy(InstrumentStrategy):
          'A1b_rtime': '0.27', 'A1b_height': '24345', 'A1b_area': '117458', 'A1b_areap': '3.0',
          'F_rtime': '0.49', 'F_height': '2183', 'F_area': '24521', 'F_areap': '<0.8*',
          'LA1c/CHb-1_rtime': '0.69', 'LA1c/CHb-1_height': '5293', 'LA1c/CHb-1_area': '32276', 'LA1c/CHb-1_areap': '0.8'}
-
+        
          Parameters:
             nested_list: list
-
+        
         Returns:
             real_dict: dict
-        '''
+
+        Args:
+          nested_list: list:
+          nested_list: list: 
+
+        Returns:
+
+        """
         # print("This is the name: %s" % self.name)
         peak_index = 0
         real_dict = {}
@@ -208,9 +244,8 @@ class D10Strategy(InstrumentStrategy):
         return real_dict
 
     def map_to_dictionarc(self, nested_list: list):
-        '''
-        Converts a nested list of peaks into a dictionary.
-
+        """Converts a nested list of peaks into a dictionary.
+        
         e.g.
         [['A1a', '0.20', '14061', '55103', '1.4'],
          ['A1b', '0.27', '24345', '117458', '3.0'],
@@ -221,13 +256,20 @@ class D10Strategy(InstrumentStrategy):
          'A1b_rtime': '0.27', 'A1b_height': '24345', 'A1b_area': '117458', 'A1b_areap': '3.0',
          'F_rtime': '0.49', 'F_height': '2183', 'F_area': '24521', 'F_areap': '<0.8*',
          'LA1c/CHb-1_rtime': '0.69', 'LA1c/CHb-1_height': '5293', 'LA1c/CHb-1_area': '32276', 'LA1c/CHb-1_areap': '0.8'}
-
+        
          Parameters:
             nested_list: list
-
+        
         Returns:
             real_dict: dict
-        '''
+
+        Args:
+          nested_list: list:
+          nested_list: list: 
+
+        Returns:
+
+        """
         # print("This is the name: %s" % self.name)
         peak_index = 0
         real_dict = {}
