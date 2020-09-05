@@ -1,5 +1,6 @@
 import unittest
-from device.instrument import InstrumentStrategy as inst
+from src.device.instrument import InstrumentStrategy as inst
+
 
 class RenameUnknownTestCase(unittest.TestCase):
     ''' tests the rename_unknown function'''
@@ -25,6 +26,7 @@ class RenameUnknownTestCase(unittest.TestCase):
         test_list = ['F', 'A1c', 'S', 'E', 'LA1c']
         expected_result = 'There are no Unknowns in the list.'
         self.assertEqual(inst.rename_unknown(self, test_list), expected_result)
+
 
 if __name__ == '__main__':
     unittest.main()

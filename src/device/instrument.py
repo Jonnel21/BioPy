@@ -3,7 +3,7 @@ import subprocess
 import shutil
 import re
 import pandas as pd
-from peak import Peak
+from src.peak import Peak
 
 
 class InstrumentStrategy():
