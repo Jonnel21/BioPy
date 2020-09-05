@@ -9,15 +9,15 @@ from src.peak import Peak
 class InstrumentStrategy():
 
     def __init__(self):
-        # self.temp_dir = 'C:/BioPy_Temp'  # local
-        self.temp_dir = 'D:/BioPy_Temp'  # build
+        self.temp_dir = '.\\temp'  # local
 
     def convert_pdf(self, pdf_tuples: tuple):
         print(pdf_tuples)
 
         # pdftotext_path = './src/pdftotext.exe'
         # pdftotext_path = './src/pdftotext.exe'  # debug
-        pdftotext_path = './pdftotext'  # dev & build
+        # pdftotext_path = './pdftotext'  # dev & build
+        pdftotext_path = '..\\pdftotext.exe'  # tests
         '''
         Takes a pdf file and converts it to a txt file.
 
@@ -36,7 +36,7 @@ class InstrumentStrategy():
 
         for i in pdf_tuples:
             tmp_arr = i.split('/')
-            pdf_file = tmp_arr[len(tmp_arr) - 1]
+            pdf_file = tmp_arr[len(tmp_arr) - 1]  # find the file name
             name = os.path.splitext(pdf_file)[0]  # returns name without ext
             with open(f"{self.temp_dir}/{name}.txt", 'x') as file:
                 subprocess.run([pdftotext_path, '-simple', f'{i}', '-'], stdout=file)
