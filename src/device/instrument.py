@@ -9,15 +9,16 @@ from src.peak import Peak
 class InstrumentStrategy():
 
     def __init__(self):
-        self.temp_dir = '.\\temp'  # local
+        # self.temp_dir = '.\\temp'  # local
+        self.temp_dir = os.path.join(os.getenv('programdata'), 'BioPy_Temp')
 
     def convert_pdf(self, pdf_tuples: tuple):
         print(pdf_tuples)
 
         # pdftotext_path = './src/pdftotext.exe'
         # pdftotext_path = './src/pdftotext.exe'  # debug
-        pdftotext_path = './pdftotext'  # dev & build
-        # pdftotext_path = '..\\pdftotext.exe'  # tests
+        # pdftotext_path = './pdftotext'  # dev & build
+        pdftotext_path = '..\\pdftotext.exe'  # tests
         '''
         Takes a pdf file and converts it to a txt file.
 
@@ -29,7 +30,6 @@ class InstrumentStrategy():
         '''
 
         try:
-            print(os.getenv('programdata'))
             os.mkdir(self.temp_dir)
         except FileExistsError:
             shutil.rmtree(self.temp_dir)
