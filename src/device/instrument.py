@@ -16,8 +16,8 @@ class InstrumentStrategy():
 
         # pdftotext_path = './src/pdftotext.exe'
         # pdftotext_path = './src/pdftotext.exe'  # debug
-        # pdftotext_path = './pdftotext'  # dev & build
-        pdftotext_path = '..\\pdftotext.exe'  # tests
+        pdftotext_path = './pdftotext'  # dev & build
+        # pdftotext_path = '..\\pdftotext.exe'  # tests
         '''
         Takes a pdf file and converts it to a txt file.
 
