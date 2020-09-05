@@ -29,6 +29,7 @@ class InstrumentStrategy():
         '''
 
         try:
+            print(os.getenv('programdata'))
             os.mkdir(self.temp_dir)
         except FileExistsError:
             shutil.rmtree(self.temp_dir)
