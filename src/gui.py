@@ -58,7 +58,7 @@ class Window:
         self.clearButton.pack(side=tkinter.RIGHT)
 
         self.buildCsvButton = tkinter.Button(self.container1, text='Start!',
-                                             command=self.onTestClick)
+                                             command=self.onBuildCsv)
         self.buildCsvButton.pack()
 
         self.savePath = tkinter.Listbox(self.saveContainer, width=50, height=1)
@@ -99,21 +99,39 @@ class Window:
         self.option3.pack(anchor=tkinter.W)
 
     def handleError(self, txt):
+        """wrapper method to customize text of error
+
+        :param txt: string describing the error.
+        :type txt: str
+        :return: error message box.
+        :rtype: messagebox
+        """
+
         return messagebox.showerror('Error', txt)
 
     def selectD10Strat(self):
+        """Sets and use methods specific to D10 reports."""
+
         self.manager.set(D10Strategy())
         print(f'you have selected {self.radioOption.get()}!')
 
-    def SelectVarientStrat(self):
+    def SelectVariantStrat(self):
+        """Sets and use methods specific to varaint reports."""
+
         self.manager.set(VariantStrategy())
         print(f'you have selected {self.radioOption.get()}!')
 
     def selectVNBS(self):
+        """Sets and use methods specific to VNBS reports."""
+
         self.manager.set(NbsStrategy())
         print(f'you have selected {self.radioOption.get()}!')
 
     def onBrowseClick(self):
+        """Selects pdf files via the file dialog
+           to be inserted in the listbox.
+        """
+
         filename = fd.askopenfiles(mode='r+b')
         if len(filename) >= 1:
             for f in filename:
@@ -121,31 +139,35 @@ class Window:
                 self.listbox1.insert(tkinter.END, f.name)
 
     def clearListBox(self):
+        """Clears all entries in the listbox."""
+
         self.listbox1.delete(0, tkinter.END)
 
     def clear(self):
+        """Clears selected entries in the listbox."""
+
         indicies = self.listbox1.curselection()
         for i, e in enumerate(reversed(indicies)):
             self.listbox1.delete(e)
 
-
     def onButtonSaveClick(self):
+        """Opens a file dialog to enter a save name for a csv file."""
+
         csv = [("csv", "*.csv|*.CSV"), ("All files", "*")]
         self.csv_filename = fd.asksaveasfilename(title='Save As',
                                                  defaultext='.csv',
                                                  filetypes=csv)
         self.savePath.insert(0, self.csv_filename)
 
-    def onTestClick(self):
+    def onBuildCsv(self):
+        """Starts a thread for processing pdf files."""
+
         files = self.listbox1.get(0, tkinter.END)
         if len(files) == 0:
-            # messagebox.showerror('Error', 'Files not found.')
             self.handleError('Files not found!')
         elif len(self.csv_filename) == 0:
-            # messagebox.showerror('Error', 'Save location is empty.')
             self.handleError('Save location is empty!')
         elif self.radioOption.get() == "0":
-            # messagebox.showerror('Error', 'Please select an instrument family.')
             self.handleError('Please select an instrument family!')
         else:
             self.progressbar.pack()
@@ -185,6 +207,13 @@ class Window:
             self.parent.after(1000, self.checkQ)
 
     def checkQ(self):
+        """Checks the queue every second for a stop code to notify the user
+           that the operation has completed.
+
+           Checks the queue every second for an error code to notify the user
+           that an error as occured.
+        """
+
         try:
             str = self.q.get(0)
             if str == "Error":
@@ -216,6 +245,8 @@ class Window:
             self.manager = manager
 
         def run(self):
+            """Runs the convert_pdf and build_csv methods in a thread"""
+
             self.manager.get().convert_pdf(self.elements)
             self.manager.get().build_csv(self.save)
             self.qu.put("Done")
