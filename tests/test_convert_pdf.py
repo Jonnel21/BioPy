@@ -6,12 +6,38 @@ from src.device.instrument import InstrumentStrategy
 class ConvertPdfTestCase(unittest.TestCase):
     ''' tests the convert_pdf function'''
 
-    def test_convert_pdf_one(self):
+    def test_directory(self):
         instrumet = InstrumentStrategy()
-        pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
-        # pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
+        # pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
+        pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
         instrumet.convert_pdf(pdf)
         self.assertTrue(os.path.isdir(instrumet.temp_dir))
+
+    def test_txt_file(self):
+        instrument = InstrumentStrategy()
+        # pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
+        pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
+        instrument.convert_pdf(pdf)
+        self.assertTrue(os.path.isfile(os.path.join(instrument.temp_dir,
+                                                    '19BMTA2306_9-9-3-2-2020-RA1.txt')))
+
+    def test_file_size_is_empty(self):
+        instrument = InstrumentStrategy()
+        path_file = os.path.join(instrument.temp_dir,
+                                 '19BMTA2306_9-9-3-2-2020-RA1.txt')
+        # pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
+        pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
+        instrument.convert_pdf(pdf)
+        self.assertNotEqual(os.stat(path_file).st_size, 0)
+
+    def test_file_size_partially_empty(self):
+        instrument = InstrumentStrategy()
+        path_file = os.path.join(instrument.temp_dir,
+                                 '19BMTA2306_9-9-3-2-2020-RA1.txt')
+        # pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
+        pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
+        instrument.convert_pdf(pdf)
+        self.assertLess(200, os.stat(path_file).st_size)
 
 
 if __name__ == '__main__':
