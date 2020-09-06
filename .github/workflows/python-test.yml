@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install setuptools --upgrade
         pip install -r requirements.txt
-      working-directory: src
+      working-directory: D:\a\BioPy\BioPy
 
     - name: Test with pytest
       run: |
