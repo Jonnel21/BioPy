@@ -81,7 +81,7 @@ class Window:
         self.option1 = tkinter.Radiobutton(self.optionContainter,
                                            variable=self.radioOption,
                                            text='Variant', value='Variant',
-                                           command=self.SelectVarientStrat)
+                                           command=self.SelectVariantStrat)
         self.option1.pack(anchor=tkinter.W)
 
         self.option2 = tkinter.Radiobutton(self.optionContainter,
