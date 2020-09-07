@@ -8,15 +8,17 @@ class ConvertPdfTestCase(unittest.TestCase):
 
     def test_directory(self):
         instrumet = InstrumentStrategy()
-        pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
+        # pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
         # pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
+        pdf = ('../../BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)
         instrumet.convert_pdf(pdf)
         self.assertTrue(os.path.isdir(instrumet.temp_dir))
 
     def test_txt_file(self):
         instrument = InstrumentStrategy()
-        pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
+        # pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
         # pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
+        pdf = ('../../BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)
         instrument.convert_pdf(pdf)
         self.assertTrue(os.path.isfile(os.path.join(instrument.temp_dir,
                                                     '19BMTA2306_9-9-3-2-2020-RA1.txt')))
@@ -25,8 +27,9 @@ class ConvertPdfTestCase(unittest.TestCase):
         instrument = InstrumentStrategy()
         path_file = os.path.join(instrument.temp_dir,
                                  '19BMTA2306_9-9-3-2-2020-RA1.txt')
-        pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
+        # pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
         # pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
+        pdf = ('../../BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)
         instrument.convert_pdf(pdf)
         self.assertNotEqual(os.stat(path_file).st_size, 0)
 
@@ -34,8 +37,9 @@ class ConvertPdfTestCase(unittest.TestCase):
         instrument = InstrumentStrategy()
         path_file = os.path.join(instrument.temp_dir,
                                  '19BMTA2306_9-9-3-2-2020-RA1.txt')
-        pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
+        # pdf = ('D:/a/BioPy/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # build
         # pdf = ('C:/Users/Jonnel/Documents/BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)  # local
+        pdf = ('../../BioPy/pdf/d10/19BMTA2306_9-9-3-2-2020-RA1.pdf',)
         instrument.convert_pdf(pdf)
         self.assertLess(200, os.stat(path_file).st_size)
 
