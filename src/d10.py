@@ -3,17 +3,16 @@ from src.peak import Peak
 
 
 class D10Strategy(InstrumentStrategy):
-    """ """
 
-    def whichVersion(self, nested_list):
+    def whichVersion(self, nested_list: list):
+        """Finds the version in the list.
+
+        :param nested_list: A list containing info from a pdf file.
+        :type nested_list: list
+        :return: A string literal of the version.
+        :rtype: str
         """
 
-        Args:
-          nested_list: 
-
-        Returns:
-
-        """
         if '5.00-2' in nested_list:
             return '5.00-2'
         elif '4.30-2' in nested_list:
@@ -21,15 +20,13 @@ class D10Strategy(InstrumentStrategy):
         else:
             return '-1'
 
-    def isControl(self, nested_list):
+    def isControl(self, nested_list: list):
+        """Determines if the list is a control report.
 
-        """Helper method to determine if the list is a Control
-
-        Args:
-          nested_list: 
-
-        Returns:
-
+        :param nested_list: A list containing info from a pdf file.
+        :type nested_list: list
+        :return: A boolean value.
+        :rtype: bool
         """
 
         if('Control' in nested_list):
@@ -37,17 +34,16 @@ class D10Strategy(InstrumentStrategy):
         else:
             return False
 
-    def checkEdgeCase(self, decoded_arr):
+    def checkEdgeCase(self, decoded_arr: list):
+        """Looks for symbols such as: \"[<, 0.8, *]\" in the list,
+        and concats them together.
+
+        :param decoded_arr: A list containing info from a pdf file.
+        :type decoded_arr: list
         """
 
-        Args:
-          decoded_arr: 
-
-        Returns:
-
-        """
         if '*' in decoded_arr:
-            while '*' in decoded_arr:    
+            while '*' in decoded_arr:
                 asterisk_index = decoded_arr.index('*')
                 if decoded_arr[asterisk_index - 2] == '<':
                     lessthan_index = decoded_arr.index('<')
@@ -68,17 +64,18 @@ class D10Strategy(InstrumentStrategy):
         else:
             pass
 
-    def create_control_table_43(self, decoded_arr, info_table):
+    def create_control_table_43(self, decoded_arr: list, info_table: list):
+        """Populates the info table specific to control reports
+        in version 4.30-2.
 
-        """Parses the control 4.30-2 reports
-
-        Args:
-          decoded_arr: param info_table:
-          info_table: 
-
-        Returns:
-
+        :param decoded_arr: A list containing info from a pdf file.
+        :type decoded_arr: list
+        :param info_table: A list of the necessary headers from a pdf file.
+        :type info_table: list
+        :return: A populated list of necessary headers.
+        :rtype: list
         """
+
         lot_id_index = decoded_arr.index('R.time') - 2
         lot_index = decoded_arr.index('Injection') - 1
         injection_date_index = lot_index + 3
@@ -100,19 +97,12 @@ class D10Strategy(InstrumentStrategy):
         return info_table
 
     def parse_text(self, txt_file: str):
+        """Reads a txt file and saves the strings in a dictionary.
 
-        """Reads a txt file and saves the strings in a list.
-        
-            Parameter:
-                text_file_path: str
-
-        Args:
-          txt_file: str:
-          txt_file: str: 
-
-        Returns:
-          decoded_arr: list
-
+        :param txt_file: path to txt file.
+        :type txt_file: str
+        :return: A dictionary with values from a pdf file
+        :rtype: dict
         """
 
         arr = []
@@ -182,33 +172,14 @@ class D10Strategy(InstrumentStrategy):
             return test_dict
 
     def map_to_dictionary(self, nested_list: list):
-
         """Converts a nested list of peaks into a dictionary.
-        
-        e.g.
-        [['A1a', '0.20', '14061', '55103', '1.4'],
-         ['A1b', '0.27', '24345', '117458', '3.0'],
-         ['F', '0.49', '2183', '24521', '<0.8*'],
-         ['LA1c/CHb-1', '0.69', '5293', '32276', '0.8']]
-         ------------------------------------------------
-        {'A1a_rtime': '0.20', 'A1a_height': '14061', 'A1a_area': '55103', 'A1a_areap': '1.4',
-         'A1b_rtime': '0.27', 'A1b_height': '24345', 'A1b_area': '117458', 'A1b_areap': '3.0',
-         'F_rtime': '0.49', 'F_height': '2183', 'F_area': '24521', 'F_areap': '<0.8*',
-         'LA1c/CHb-1_rtime': '0.69', 'LA1c/CHb-1_height': '5293', 'LA1c/CHb-1_area': '32276', 'LA1c/CHb-1_areap': '0.8'}
-        
-         Parameters:
-            nested_list: list
-        
-        Returns:
-            real_dict: dict
 
-        Args:
-          nested_list: list:
-          nested_list: list: 
-
-        Returns:
-
+        :param nested_list: Values from a pdf file.
+        :type nested_list: list
+        :return: A dictionary with mappings from a pdf file.
+        :rtype: dict
         """
+
         # print("This is the name: %s" % self.name)
         peak_index = 0
         real_dict = {}
@@ -245,31 +216,14 @@ class D10Strategy(InstrumentStrategy):
 
     def map_to_dictionarc(self, nested_list: list):
         """Converts a nested list of peaks into a dictionary.
-        
-        e.g.
-        [['A1a', '0.20', '14061', '55103', '1.4'],
-         ['A1b', '0.27', '24345', '117458', '3.0'],
-         ['F', '0.49', '2183', '24521', '<0.8*'],
-         ['LA1c/CHb-1', '0.69', '5293', '32276', '0.8']]
-         ------------------------------------------------
-        {'A1a_rtime': '0.20', 'A1a_height': '14061', 'A1a_area': '55103', 'A1a_areap': '1.4',
-         'A1b_rtime': '0.27', 'A1b_height': '24345', 'A1b_area': '117458', 'A1b_areap': '3.0',
-         'F_rtime': '0.49', 'F_height': '2183', 'F_area': '24521', 'F_areap': '<0.8*',
-         'LA1c/CHb-1_rtime': '0.69', 'LA1c/CHb-1_height': '5293', 'LA1c/CHb-1_area': '32276', 'LA1c/CHb-1_areap': '0.8'}
-        
-         Parameters:
-            nested_list: list
-        
-        Returns:
-            real_dict: dict
+        The dictionary created is specific to Control Reports.
 
-        Args:
-          nested_list: list:
-          nested_list: list: 
-
-        Returns:
-
+        :param nested_list: Values from a pdf file.
+        :type nested_list: list
+        :return: A dictionary with mappings from a pdf file.
+        :rtype: dict
         """
+
         # print("This is the name: %s" % self.name)
         peak_index = 0
         real_dict = {}
