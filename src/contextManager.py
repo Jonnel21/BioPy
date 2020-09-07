@@ -1,4 +1,4 @@
-from device.instrument import InstrumentStrategy
+from src.device.instrument import InstrumentStrategy
 
 
 class ContextManager:

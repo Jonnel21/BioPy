@@ -1,5 +1,5 @@
-from device.instrument import InstrumentStrategy
-from peak import Peak
+from src.device.instrument import InstrumentStrategy
+from src.peak import Peak
 
 
 class D10Strategy(InstrumentStrategy):
