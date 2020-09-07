@@ -32,9 +32,8 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pwd
-        dir
         pytest
+      working-directory: tests
 
     - name: Pyinstaller
       run: pyinstaller gui.spec
