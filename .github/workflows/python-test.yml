@@ -32,6 +32,8 @@ jobs:
 
     - name: Test with pytest
       run: |
+        pwd
+        dir
         pytest
 
     - name: Pyinstaller
