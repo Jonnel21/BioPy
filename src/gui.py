@@ -150,6 +150,26 @@ class Window:
         for i, e in enumerate(reversed(indicies)):
             self.listbox1.delete(e)
 
+    def disableAllButtons(self):
+        """All buttons will return to a nonfunctional state."""
+
+        self.browseButton['state'] = tkinter.DISABLED
+        self.saveButton['state'] = tkinter.DISABLED
+        self.clearButton['state'] = tkinter.DISABLED
+        self.clearAllButton['state'] = tkinter.DISABLED
+        self.buildCsvButton['state'] = tkinter.DISABLED
+        self.testButton['state'] = tkinter.DISABLED
+
+    def enableAllButtons(self):
+        """All buttons will return to a functional state."""
+
+        self.browseButton['state'] = tkinter.NORMAL
+        self.saveButton['state'] = tkinter.NORMAL
+        self.clearButton['state'] = tkinter.NORMAL
+        self.clearAllButton['state'] = tkinter.NORMAL
+        self.buildCsvButton['state'] = tkinter.NORMAL
+        self.testButton['state'] = tkinter.NORMAL
+
     def onButtonSaveClick(self):
         """Opens a file dialog to enter a save name for a csv file."""
 
@@ -175,7 +195,7 @@ class Window:
                                     self.csv_filename, self.manager)
             self.progressbar.start(20)
             self.t1.start()
-            self.testButton['state'] = tkinter.DISABLED
+            self.disableAllButtons()
             self.parent.after(1000, self.checkQ)
 
     def onAutomatedTestClick(self):
@@ -219,7 +239,7 @@ class Window:
             if str == "Error":
                 self.progressbar.stop()
                 self.progressbar.pack_forget()
-                self.testButton['state'] = tkinter.NORMAL
+                self.enableAllButtons()
                 messagebox.showerror('Error', 'Please use valid pdf file.')
             else:
 
@@ -228,7 +248,7 @@ class Window:
                                           parent=self.container1,
                                           icon=messagebox.INFO,
                                           type=messagebox.OK)):
-                    self.testButton['state'] = tkinter.NORMAL
+                    self.enableAllButtons()
                     self.progressbar.pack_forget()
                     self.savePath.insert(0, "Enter save location")
                     self.csv_filename = ""

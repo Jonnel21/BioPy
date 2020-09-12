@@ -2,11 +2,9 @@ from src.device.instrument import InstrumentStrategy
 
 
 class ContextManager:
-
-    """
-        This class is responsible for creating a new
-        strategy based on the three options given to
-        the user.
+    """This class is responsible for creating a new
+    strategy based on the three options given to
+    the user.
     """
 
     def __init__(self, strategy=None):
