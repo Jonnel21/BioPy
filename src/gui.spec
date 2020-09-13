@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['gui.py'],
-             pathex=['..\\src'],
+             pathex=['C:\\Users\\Jonnel\\Documents\\BioPy\\src'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -26,7 +26,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True )
+          console=True , version='..\\file_version_info.txt')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
