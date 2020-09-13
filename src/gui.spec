@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['gui.py'],
-             pathex=['C:\\Users\\Jonnel\\Documents\\BioPy\\src'],
+             pathex=['..\\src'],
              binaries=[],
              datas=[],
              hiddenimports=[],
