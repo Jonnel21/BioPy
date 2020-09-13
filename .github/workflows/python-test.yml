@@ -23,6 +23,11 @@ jobs:
       with:
         python-version: 3.8
 
+    - name: Output Run ID
+      run: echo ${{ github.run_id }}
+    - name: Output Run Number
+      run: echo ${{ github.run_number }}
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
