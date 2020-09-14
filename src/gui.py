@@ -10,6 +10,7 @@ from variant2 import VariantStrategy
 from nbs import NbsStrategy
 import os
 import queue
+import sys
 import tkinter.filedialog as fd
 
 
@@ -114,8 +115,8 @@ class Window:
         :return: A messagebox showing a summary, version, and authors.
         :rtype: messagebox
         """
-
-        with open("..\\version.txt", "r") as f:
+        txt = os.path.join(sys._MEIPASS, "version.txt")
+        with open(txt, "r") as f:
             version = f.readline()
         about = "A pdf converter of patient & control samples to csv format.\n\n"
         version += "\n"
