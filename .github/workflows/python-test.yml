@@ -25,7 +25,7 @@ jobs:
 
     - name: Output Run ID
       run: echo ${{ github.run_id }}
-      
+
     - name: Output Run Number
       run: echo ${{ github.run_number }}
 
@@ -35,6 +35,9 @@ jobs:
         pip install setuptools --upgrade
         pip install -r requirements.txt
       working-directory: D:\a\BioPy\BioPy
+
+    - name: Update build number
+      run: python semvar.py ${{ github.run_number }}
 
     - name: Test with pytest
       run: |

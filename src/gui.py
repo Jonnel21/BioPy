@@ -26,6 +26,9 @@ class Window:
         self.container1 = tkinter.Frame(parent)
         self.container1.pack(fill=tkinter.BOTH, expand=2)
 
+        self.menubar = tkinter.Menu(parent)
+        self.menubar.add_command(label="About", command=self.onMenu)
+
         self.saveContainer = tkinter.Frame(parent)
         self.saveContainer.pack()
 
@@ -97,6 +100,28 @@ class Window:
                                            value='VNBS',
                                            command=self.selectVNBS)
         self.option3.pack(anchor=tkinter.W)
+        self.parent.config(menu=self.menubar)
+
+        positionRight = int(self.parent.winfo_screenwidth()/4)
+        positionDown = int(self.parent.winfo_screenheight()/5)
+
+        # Positions the window in the center of the page.
+        self.parent.geometry("+{}+{}".format(positionRight, positionDown))
+
+    def onMenu(self):
+        """Handles when the 'About' menu item is clicked.
+
+        :return: A messagebox showing a summary, version, and authors.
+        :rtype: messagebox
+        """
+
+        with open("..\\version.txt", "r") as f:
+            version = f.readline()
+        about = "A pdf converter of patient & control samples to csv format.\n\n"
+        version += "\n"
+        authors = "Jonnel Alcantara & Kevin Nganga"
+        msg = f"{about}Version: {version}Authors: {authors}"
+        return messagebox.showinfo(title="About", message=msg)
 
     def handleError(self, txt):
         """wrapper method to customize text of error
