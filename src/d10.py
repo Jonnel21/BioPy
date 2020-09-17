@@ -119,7 +119,6 @@ class D10Strategy(InstrumentStrategy):
 
             info_table = []
             nested_table = []
-            temp = ""
             arr = f.read().split()
             decoded_arr = self.wrapper_decode(arr)
 

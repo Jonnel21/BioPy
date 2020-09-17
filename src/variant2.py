@@ -68,7 +68,7 @@ class VariantStrategy(InstrumentStrategy):
         type_index = Peak.TYPE.value
 
         if('SAMP' in decoded_arr):
-            info_table.append(decoded_arr[sampleid_index] + decoded_arr[sampleid_index + 1]) 
+            info_table.append(decoded_arr[sampleid_index] + decoded_arr[sampleid_index + 1])
         else:
             info_table.append(decoded_arr[sampleid_index])
 

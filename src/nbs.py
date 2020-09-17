@@ -37,7 +37,6 @@ class NbsStrategy(InstrumentStrategy):
             total_area_index = decoded_arr.index('Area:') + 1
             pattern_index = decoded_arr.index('Pattern:') + 1
 
-
             # peak table indicies for VNBS only
             start = decoded_arr.index('(min)')  # inclusive
             end = decoded_arr.index('Pattern:')  # exclusive

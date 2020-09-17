@@ -125,7 +125,7 @@ class InstrumentStrategy():
         """
         info_headers = ('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern|'
                         'Well|Plate|Tube|Run|Lot|Expiration Date')
-        unknown_match = re.search('^Unknown\d', x)
+        unknown_match = re.search('^Unknown\\d', x)
         info_match = re.match(info_headers, x)
         if(info_match):
             return 0
