@@ -8,9 +8,12 @@ from contextManager import ContextManager
 from d10 import D10Strategy
 from variant2 import VariantStrategy
 from nbs import NbsStrategy
+import traceback
 import os
 import queue
 import sys
+import pyxpdf
+from datetime import datetime
 import tkinter.filedialog as fd
 
 
@@ -23,6 +26,11 @@ class Window:
         self.radioOption = StringVar(value="0")
         self.q = queue.Queue()
         self.manager = ContextManager()
+        self.logs = os.path.join(os.getenv('programdata'), 'BioPy_Logs')
+        try:
+            os.mkdir(self.logs)
+        except FileExistsError:
+            pass
 
         self.container1 = tkinter.Frame(parent)
         self.container1.pack(fill=tkinter.BOTH, expand=2)
@@ -115,6 +123,7 @@ class Window:
         :return: A messagebox showing a summary, version, and authors.
         :rtype: messagebox
         """
+
         txt = os.path.join(sys._MEIPASS, "version.txt")
         with open(txt, "r") as f:
             version = f.readline()
@@ -158,11 +167,19 @@ class Window:
            to be inserted in the listbox.
         """
 
-        filename = fd.askopenfiles(mode='r+b')
-        if len(filename) >= 1:
-            for f in filename:
-                print(f.name)
-                self.listbox1.insert(tkinter.END, f.name)
+        try:
+            filename = fd.askopenfiles(mode='r+b')
+            if len(filename) >= 1:
+                for f in filename:
+                    print(f.name)
+                    self.listbox1.insert(tkinter.END, f.name)
+        except Exception:
+            path = os.path.join(self.logs, "error.txt")
+            self.handleError("Error: Send logs to developers.")
+            with open(path, "a+") as f:
+                err = traceback.format_exception(*sys.exc_info())
+                timedate = datetime.now()
+                f.write(f"{timedate}: {str(err)}\n")
 
     def clearListBox(self):
         """Clears all entries in the listbox."""
@@ -266,7 +283,6 @@ class Window:
                 self.progressbar.stop()
                 self.progressbar.pack_forget()
                 self.enableAllButtons()
-                messagebox.showerror('Error', 'Please use valid pdf file.')
             else:
 
                 self.progressbar.stop()
@@ -290,14 +306,57 @@ class Window:
             self.save = save
             self.manager = manager
 
+        def checkFiles(self):
+            """Verifies that the files in the listbox
+            is the same as what's selected by the
+            user.
+
+            :return: A string literal.
+            :rtype: str
+            """
+
+            errors = ""
+            with os.scandir(self.manager.get().temp_dir) as it:
+                for entry in it:
+                    with open(entry, 'r') as f:
+                        txtlist = list(f.read().split())
+                        if(self.manager.get().getType() in txtlist):
+                            print(f"Success: file {entry} matches selected instrument family.")
+                        else:
+                            errors += f"Error: file {entry} is invalid!\n"
+            if(errors):
+                self.qu.put("Error")
+                messagebox.showerror(title="Error", message=errors)
+                return "Error"
+
         def run(self):
             """Runs the convert_pdf and build_csv methods in a thread"""
-
-            self.manager.get().convert_pdf(self.elements)
-            self.manager.get().build_csv(self.save)
-            self.qu.put("Done")
+            try:
+                self.manager.get().convert_pdf(self.elements)
+            except pyxpdf.xpdf.PDFSyntaxError:
+                messagebox.showerror(title="Error", message="Error parsing PDF file.")
+                self.qu.put("Error")
+            except Exception:
+                path = os.path.join(self.logs, "error.txt")
+                messagebox.showerror(title="Error", message="Error: Send logs to developers.")
+                with open(path, "a+") as f:
+                    err = traceback.format_exception(*sys.exc_info())
+                    timedate = datetime.now()
+                    f.write(f"{timedate}: {str(err)}\n")
+                self.qu.put("Error")
+            if(self.checkFiles() == 'Error'):
+                pass
+            else:
+                self.manager.get().build_csv(self.save)
+                self.qu.put("Done")
 
         def getQueue(self):
+            """Queue for stopping thread
+
+            :return: The shared queue between the window and thread
+            :rtype: Queue
+            """
+
             return self.qu
 
 

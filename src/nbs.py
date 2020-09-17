@@ -4,6 +4,15 @@ from peak import Peak
 
 class NbsStrategy(InstrumentStrategy):
 
+    def getType(self):
+        """The type of instrument
+
+        :return: A string literal
+        :rtype: str
+        """
+
+        return "VARIANTnbs"
+
     def parse_text(self, text_file: str):
         arr = []
         with open(text_file, 'rb') as f:

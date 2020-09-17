@@ -11,6 +11,7 @@ class InstrumentStrategy():
 
     def __init__(self):
         self.temp_dir = os.path.join(os.getenv('programdata'), 'BioPy_Temp')
+        self.logs = os.path.join(os.getenv('programdata'), 'BioPy_Logs')
 
     def convert_pdf(self, pdf_tuples: tuple):
         """Takes a pdf file and converts it to a txt file.

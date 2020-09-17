@@ -4,6 +4,15 @@ from src.peak import Peak
 
 class D10Strategy(InstrumentStrategy):
 
+    def getType(self):
+        """The type of instrument
+
+        :return: A string literal
+        :rtype: str
+        """
+
+        return "D-10"
+
     def whichVersion(self, nested_list: list):
         """Finds the version in the list.
 

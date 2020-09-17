@@ -4,6 +4,15 @@ from peak import Peak
 
 class VariantStrategy(InstrumentStrategy):
 
+    def getType(self):
+        """The type of instrument
+
+        :return: A string literal
+        :rtype: str
+        """
+
+        return "VII"
+
     def isA1c(self, nested_list):
 
         '''
