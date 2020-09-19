@@ -82,7 +82,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: setup
-        path: src\dist\gui\setup\BioPy_Setup.exe
+        path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_*
 #     - name: Lint with flake8
 #       run: |
 #         # stop the build if there are Python syntax errors or undefined names
