@@ -40,7 +40,9 @@ jobs:
       run: |
         python semvar.py ${{ github.run_number }}
         python updateVersion.py
-        $Env:VERSION = Get-Content version.txt -Tail 1
+
+    env:
+      VERSION: ${{Get-Content version.txt -Tail 1}}
 
     - name: Test with pytest
       run: |
