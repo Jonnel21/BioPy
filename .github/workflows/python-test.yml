@@ -79,11 +79,11 @@ jobs:
     #     recursive: false
 
     - name: Upload setup.exe artifact
-      env:
-        VERSION: ${{Get-Content version.txt -Tail 1}}
+      run:
+        $VERSION=Get-Content version.txt -Tail 1
       uses: actions/upload-artifact@v2
       with:
-        name: BioPy_Setup_${{env.VERSION}}
+        name: BioPy_Setup_${{VERSION}}
         path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_*
 #     - name: Lint with flake8
 #       run: |
