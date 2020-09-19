@@ -40,6 +40,7 @@ jobs:
       run: |
         python semvar.py ${{ github.run_number }}
         python updateVersion.py
+        $VERSION= Get-Content version.txt -Tail 1
 
     - name: Test with pytest
       run: |
@@ -79,8 +80,6 @@ jobs:
     #     recursive: false
 
     - name: Upload setup.exe artifact
-      run:
-        $VERSION=Get-Content version.txt -Tail 1
       uses: actions/upload-artifact@v2
       with:
         name: BioPy_Setup_${{VERSION}}
