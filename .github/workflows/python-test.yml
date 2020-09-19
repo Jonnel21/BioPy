@@ -36,8 +36,10 @@ jobs:
         pip install -r requirements.txt
       working-directory: D:\a\BioPy\BioPy
 
-    - name: Update build number
-      run: python semvar.py ${{ github.run_number }}
+    - name: Update build/version number
+      run: |
+        python semvar.py ${{ github.run_number }}
+        python updateVersion.py
 
     - name: Test with pytest
       run: |

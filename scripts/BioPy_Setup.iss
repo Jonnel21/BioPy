@@ -4,6 +4,8 @@
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 
+#define AppVer GetFileVersion("D:\a\BioPy\BioPy\src\dist\gui\gui.exe")
+
 [Setup]
 AppName=BioPy
 AppVersion=1.0
@@ -15,8 +17,8 @@ DisableProgramGroupPage=yes
 UninstallDisplayIcon={app}\MyProg.exe
 Compression=lzma2
 SolidCompression=yes
-OutputDir=D:\a\BioPy\BioPy\src\dist\gui\setup
-OutputBaseFilename=BioPy_Setup
+OutputDir=D:\a\BioPy\BioPy\src\dist\gui\BioPy_Setup_{#AppVer}
+OutputBaseFilename=BioPy_Setup_{#AppVer}
 
 [Files]
 Source: "D:\a\BioPy\BioPy\src\dist\gui\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
