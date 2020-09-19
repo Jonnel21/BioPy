@@ -40,7 +40,8 @@ jobs:
       run: |
         python semvar.py ${{ github.run_number }}
         python updateVersion.py
-        $VERSION= Get-Content version.txt -Tail 1
+        $version= Get-Content version.txt -Tail 1
+        echo "::set-env name=VERSION::$version"
 
     - name: Test with pytest
       run: |
@@ -82,7 +83,7 @@ jobs:
     - name: Upload setup.exe artifact
       uses: actions/upload-artifact@v2
       with:
-        name: BioPy_Setup_${{VERSION}}
+        name: BioPy_Setup_${{ env.VERSION }}
         path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_*
 #     - name: Lint with flake8
 #       run: |
