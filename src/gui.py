@@ -13,7 +13,6 @@ import os
 import queue
 import sys
 import pyxpdf
-import tracemalloc
 from datetime import datetime
 import tkinter.filedialog as fd
 
@@ -363,15 +362,6 @@ class Window:
             return self.qu
 
 
-tracemalloc.start()
-
 root = Tk()
 app = Window(root)
 root.mainloop()
-
-snapshot = tracemalloc.take_snapshot()
-top_stats = snapshot.statistics('lineno')
-
-print("[ Top 10 ]")
-for stat in top_stats[:10]:
-    print(stat)
