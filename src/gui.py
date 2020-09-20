@@ -13,6 +13,7 @@ import os
 import queue
 import sys
 import pyxpdf
+import tracemalloc
 from datetime import datetime
 import tkinter.filedialog as fd
 
@@ -267,7 +268,7 @@ class Window:
             # self.progressbar.start(20)
             self.t1.start()
             self.testButton['state'] = tkinter.DISABLED
-            self.parent.after(1000, self.checkQ)
+            self.parent.after(500, self.checkQ)
 
     def checkQ(self):
         """Checks the queue every second for a stop code to notify the user
@@ -280,10 +281,11 @@ class Window:
         try:
             str = self.q.get(0)
             if str == "Error":
+
                 self.progressbar.stop()
                 self.progressbar.pack_forget()
                 self.enableAllButtons()
-            else:
+            elif str == "Done":
 
                 self.progressbar.stop()
                 if(messagebox.askquestion('Info', 'Complete!',
@@ -294,6 +296,8 @@ class Window:
                     self.progressbar.pack_forget()
                     self.savePath.insert(0, "Enter save location")
                     self.csv_filename = ""
+            else:
+                pass
 
         except queue.Empty:
             self.parent.after(1000, self.checkQ)
@@ -335,7 +339,6 @@ class Window:
                 self.manager.get().convert_pdf(self.elements)
             except pyxpdf.xpdf.PDFSyntaxError:
                 messagebox.showerror(title="Error", message="Error parsing PDF file.")
-                self.qu.put("Error")
             except Exception:
                 path = os.path.join(self.logs, "error.txt")
                 messagebox.showerror(title="Error", message="Error: Send logs to developers.")
@@ -360,6 +363,15 @@ class Window:
             return self.qu
 
 
+tracemalloc.start()
+
 root = Tk()
 app = Window(root)
 root.mainloop()
+
+snapshot = tracemalloc.take_snapshot()
+top_stats = snapshot.statistics('lineno')
+
+print("[ Top 10 ]")
+for stat in top_stats[:10]:
+    print(stat)
