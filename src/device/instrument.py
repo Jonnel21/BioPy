@@ -2,6 +2,7 @@ import os
 import shutil
 import re
 import pandas as pd
+from datetime import datetime
 from pyxpdf import Document
 from pyxpdf.xpdf import TextControl
 from src.peak import Peak
@@ -27,16 +28,33 @@ class InstrumentStrategy():
             os.mkdir(self.temp_dir)
 
         for i in pdf_tuples:
-            tmp_arr = i.split('/')
-            pdf_file = tmp_arr[len(tmp_arr) - 1]  # find the file name
-            name = os.path.splitext(pdf_file)[0]  # returns name w/o ext
-            with open(f"{self.temp_dir}/{name}.txt", 'x') as file:
-                with open(i, 'rb') as fp:
-                    doc = Document(fp)
-                    label_page = doc[0]
-                    text_control = TextControl('simple', discard_clipped=True)
-                    text = label_page.text(control=text_control)
-                    file.write(text)
+            with open(i, 'rb') as fp:
+                doc = Document(fp)
+                if(doc.num_pages == 1):
+                    tmp_arr = i.split('/')
+                    pdf_file = tmp_arr[len(tmp_arr) - 1]  # find the file name
+                    name = os.path.splitext(pdf_file)[0]  # returns name w/o ext
+                    with open(f"{self.temp_dir}/{name}.txt", 'x') as file:
+                        label_page = doc[0]
+                        text_control = TextControl('simple', discard_clipped=True)
+                        text = label_page.text(control=text_control)
+                        file.write(text)
+                else:
+                    for j in range(doc.num_pages):
+                        now = datetime.now()
+                        month = now.month
+                        day = now.day
+                        year = now.year
+                        hour = now.hour
+                        minute = now.minute
+                        seconds = now.second
+                        micro = now.microsecond
+                        with open(f"{self.temp_dir}/{month}_{day}_{year}_{hour}_{minute}_{seconds}_{micro}_{j}.txt", 'x') as file:
+                            label_page = doc[j]
+                            text_control = TextControl('simple', discard_clipped=True)
+                            text = label_page.text(control=text_control)
+                            file.write(text)
+
 
     def wrapper_decode(self, arr: list):
         """Decode the bytes to string in the list.

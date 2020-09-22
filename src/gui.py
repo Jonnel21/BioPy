@@ -174,8 +174,8 @@ class Window:
                     print(f.name)
                     self.listbox1.insert(tkinter.END, f.name)
         except Exception:
-            path = os.path.join(self.logs, "error.txt")
-            self.handleError("Error: Send logs to developers.")
+            path = os.path.join(os.getenv('programdata'), "BioPy_Logs", "error.txt")
+            self.handleError(f"Error see logs at {path}")
             with open(path, "a+") as f:
                 err = traceback.format_exception(*sys.exc_info())
                 timedate = datetime.now()
@@ -239,7 +239,7 @@ class Window:
             self.progressbar.start(20)
             self.t1.start()
             self.disableAllButtons()
-            self.parent.after(1000, self.checkQ)
+            self.parent.after(100, self.checkQ)
 
     def onAutomatedTestClick(self):
         vnbs = 'vnbs'
@@ -280,12 +280,11 @@ class Window:
         try:
             str = self.q.get(0)
             if str == "Error":
-
                 self.progressbar.stop()
                 self.progressbar.pack_forget()
                 self.enableAllButtons()
-            elif str == "Done":
 
+            elif str == "Done":
                 self.progressbar.stop()
                 if(messagebox.askquestion('Info', 'Complete!',
                                           parent=self.container1,
@@ -299,7 +298,7 @@ class Window:
                 pass
 
         except queue.Empty:
-            self.parent.after(1000, self.checkQ)
+            self.parent.after(100, self.checkQ)
 
     class myThread(Thread):
         def __init__(self, qu, elements, save, manager):
@@ -331,6 +330,8 @@ class Window:
                 self.qu.put("Error")
                 messagebox.showerror(title="Error", message=errors)
                 return "Error"
+            else:
+                return "Pass"
 
         def run(self):
             """Runs the convert_pdf and build_csv methods in a thread"""
@@ -339,15 +340,15 @@ class Window:
             except pyxpdf.xpdf.PDFSyntaxError:
                 messagebox.showerror(title="Error", message="Error parsing PDF file.")
             except Exception:
-                path = os.path.join(self.logs, "error.txt")
-                messagebox.showerror(title="Error", message="Error: Send logs to developers.")
+                path = os.path.join(os.getenv('programdata'), "BioPy_Logs", "error.txt")
+                messagebox.showerror(title="Error", message=f"Error see logs at {path}")
                 with open(path, "a+") as f:
                     err = traceback.format_exception(*sys.exc_info())
                     timedate = datetime.now()
                     f.write(f"{timedate}: {str(err)}\n")
                 self.qu.put("Error")
-            if(self.checkFiles() == 'Error'):
-                pass
+            if(self.checkFiles() == "Error"):
+                return "Error"
             else:
                 self.manager.get().build_csv(self.save)
                 self.qu.put("Done")
