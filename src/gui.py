@@ -1,20 +1,23 @@
-import tkinter
-from tkinter import StringVar
-from tkinter import Tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import Listbox, Frame, Button
+from tkinter import Tk, ttk, Menu
+from tkinter import messagebox, StringVar
+from tkinter import Scrollbar, Radiobutton
+from tkinter import EXTENDED, HORIZONTAL
+from tkinter import DISABLED, NORMAL
+from tkinter import BOTH, LEFT, RIGHT, END
+from tkinter import W, E, Y
 from threading import Thread
 from contextManager import ContextManager
 from d10 import D10Strategy
 from variant2 import VariantStrategy
 from nbs import NbsStrategy
-import traceback
-import os
-import queue
-import sys
-import pyxpdf
+from traceback import format_exception
+from os import getenv, path, mkdir, scandir
+from queue import Queue, Empty
+from pyxpdf.xpdf import PDFSyntaxError
 from datetime import datetime
 import tkinter.filedialog as fd
+import sys
 
 
 class Window:
@@ -24,91 +27,91 @@ class Window:
         self.parent.title('BioPy')
         self.csv_filename = ""
         self.radioOption = StringVar(value="0")
-        self.q = queue.Queue()
+        self.q = Queue()
         self.manager = ContextManager()
-        self.logs = os.path.join(os.getenv('programdata'), 'BioPy_Logs')
+        self.logs = path.join(getenv('programdata'), 'BioPy_Logs')
         try:
-            os.mkdir(self.logs)
+            mkdir(self.logs)
         except FileExistsError:
             pass
 
-        self.container1 = tkinter.Frame(parent)
-        self.container1.pack(fill=tkinter.BOTH, expand=2)
+        self.container1 = Frame(parent)
+        self.container1.pack(fill=BOTH, expand=2)
 
-        self.menubar = tkinter.Menu(parent)
+        self.menubar = Menu(parent)
         self.menubar.add_command(label="About", command=self.onMenu)
 
-        self.saveContainer = tkinter.Frame(parent)
+        self.saveContainer = Frame(parent)
         self.saveContainer.pack()
 
-        self.optionContainter = tkinter.Frame(parent)
-        self.optionContainter.pack(anchor=tkinter.E)
+        self.optionContainter = Frame(parent)
+        self.optionContainter.pack(anchor=E)
 
-        self.listbox1 = tkinter.Listbox(self.container1)
+        self.listbox1 = Listbox(self.container1)
 
-        self.scrollbar = tkinter.Scrollbar(self.container1)
+        self.scrollbar = Scrollbar(self.container1)
         self.scrollbar.configure(command=self.listbox1.yview)
-        self.scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
 
         self.listbox1.configure(width=100,
                                 height=20,
                                 yscrollcommand=self.scrollbar.set,
-                                selectmode=tkinter.EXTENDED)
-        self.listbox1.pack(fill=tkinter.BOTH, expand=1)
+                                selectmode=EXTENDED)
+        self.listbox1.pack(fill=BOTH, expand=1)
 
-        self.browseButton = tkinter.Button(self.container1, text='Browse',
-                                           background='green',
-                                           command=self.onBrowseClick)
-        self.browseButton.pack(side=tkinter.LEFT)
+        self.browseButton = Button(self.container1, text='Browse',
+                                   background='green',
+                                   command=self.onBrowseClick)
+        self.browseButton.pack(side=LEFT)
 
-        self.clearAllButton = tkinter.Button(self.container1, text='Clear All',
-                                             command=self.clearListBox)
-        self.clearAllButton.pack(side=tkinter.RIGHT)
+        self.clearAllButton = Button(self.container1, text='Clear All',
+                                     command=self.clearListBox)
+        self.clearAllButton.pack(side=RIGHT)
 
-        self.clearButton = tkinter.Button(self.container1, text='Clear',
-                                          command=self.clear)
-        self.clearButton.pack(side=tkinter.RIGHT)
+        self.clearButton = Button(self.container1, text='Clear',
+                                  command=self.clear)
+        self.clearButton.pack(side=RIGHT)
 
-        self.buildCsvButton = tkinter.Button(self.container1, text='Start!',
-                                             command=self.onBuildCsv)
+        self.buildCsvButton = Button(self.container1, text='Start!',
+                                     command=self.onBuildCsv)
         self.buildCsvButton.pack()
 
-        self.savePath = tkinter.Listbox(self.saveContainer, width=50, height=1)
+        self.savePath = Listbox(self.saveContainer, width=50, height=1)
         self.savePath.insert(0, "Enter save location...")
-        self.savePath.pack(side=tkinter.LEFT)
+        self.savePath.pack(side=LEFT)
 
-        self.saveButton = tkinter.Button(self.saveContainer, text='Save As...',
-                                         command=self.onButtonSaveClick)
-        self.saveButton.pack(side=tkinter.RIGHT)
+        self.saveButton = Button(self.saveContainer, text='Save As...',
+                                 command=self.onButtonSaveClick)
+        self.saveButton.pack(side=RIGHT)
 
-        self.testButton = tkinter.Button(self.container1,
-                                         text='Automated_Test',
-                                         command=self.onAutomatedTestClick)
+        self.testButton = Button(self.container1,
+                                 text='Automated_Test',
+                                 command=self.onAutomatedTestClick)
         # self.testButton.pack()
 
         self.progressbar = ttk.Progressbar(self.container1, value=0,
-                                           orient=tkinter.HORIZONTAL,
+                                           orient=HORIZONTAL,
                                            mode='indeterminate', length=100)
 
-        self.option1 = tkinter.Radiobutton(self.optionContainter,
-                                           variable=self.radioOption,
-                                           text='Variant', value='Variant',
-                                           command=self.SelectVariantStrat)
-        self.option1.pack(anchor=tkinter.W)
+        self.option1 = Radiobutton(self.optionContainter,
+                                   variable=self.radioOption,
+                                   text='Variant', value='Variant',
+                                   command=self.SelectVariantStrat)
+        self.option1.pack(anchor=W)
 
-        self.option2 = tkinter.Radiobutton(self.optionContainter,
-                                           variable=self.radioOption,
-                                           text='D-10',
-                                           value='D-10',
-                                           command=self.selectD10Strat)
-        self.option2.pack(anchor=tkinter.W)
+        self.option2 = Radiobutton(self.optionContainter,
+                                   variable=self.radioOption,
+                                   text='D-10',
+                                   value='D-10',
+                                   command=self.selectD10Strat)
+        self.option2.pack(anchor=W)
 
-        self.option3 = tkinter.Radiobutton(self.optionContainter,
-                                           variable=self.radioOption,
-                                           text='VNBS',
-                                           value='VNBS',
-                                           command=self.selectVNBS)
-        self.option3.pack(anchor=tkinter.W)
+        self.option3 = Radiobutton(self.optionContainter,
+                                   variable=self.radioOption,
+                                   text='VNBS',
+                                   value='VNBS',
+                                   command=self.selectVNBS)
+        self.option3.pack(anchor=W)
         self.parent.config(menu=self.menubar)
 
         positionRight = int(self.parent.winfo_screenwidth()/4)
@@ -124,10 +127,10 @@ class Window:
         :rtype: messagebox
         """
 
-        txt = os.path.join(sys._MEIPASS, "version.txt")
+        txt = path.join(sys._MEIPASS, "version.txt")
         with open(txt, "r") as f:
             version = f.readline()
-        about = "A pdf converter of patient & control samples to csv format.\n\n"
+        about = "A pdf to csv tool for patient & control samples.\n\n"
         version += "\n"
         authors = "Jonnel Alcantara & Kevin Nganga"
         msg = f"{about}Version: {version}Authors: {authors}"
@@ -172,19 +175,19 @@ class Window:
             if len(filename) >= 1:
                 for f in filename:
                     print(f.name)
-                    self.listbox1.insert(tkinter.END, f.name)
+                    self.listbox1.insert(END, f.name)
         except Exception:
-            path = os.path.join(os.getenv('programdata'), "BioPy_Logs", "error.txt")
-            self.handleError(f"Error see logs at {path}")
-            with open(path, "a+") as f:
-                err = traceback.format_exception(*sys.exc_info())
+            error = path.join(getenv('programdata'), "BioPy_Logs", "error.txt")
+            self.handleError(f"Error see logs at {error}")
+            with open(error, "a+") as f:
+                err = format_exception(*sys.exc_info())
                 timedate = datetime.now()
                 f.write(f"{timedate}: {str(err)}\n")
 
     def clearListBox(self):
         """Clears all entries in the listbox."""
 
-        self.listbox1.delete(0, tkinter.END)
+        self.listbox1.delete(0, END)
 
     def clear(self):
         """Clears selected entries in the listbox."""
@@ -196,22 +199,22 @@ class Window:
     def disableAllButtons(self):
         """All buttons will return to a nonfunctional state."""
 
-        self.browseButton['state'] = tkinter.DISABLED
-        self.saveButton['state'] = tkinter.DISABLED
-        self.clearButton['state'] = tkinter.DISABLED
-        self.clearAllButton['state'] = tkinter.DISABLED
-        self.buildCsvButton['state'] = tkinter.DISABLED
-        self.testButton['state'] = tkinter.DISABLED
+        self.browseButton['state'] = DISABLED
+        self.saveButton['state'] = DISABLED
+        self.clearButton['state'] = DISABLED
+        self.clearAllButton['state'] = DISABLED
+        self.buildCsvButton['state'] = DISABLED
+        self.testButton['state'] = DISABLED
 
     def enableAllButtons(self):
         """All buttons will return to a functional state."""
 
-        self.browseButton['state'] = tkinter.NORMAL
-        self.saveButton['state'] = tkinter.NORMAL
-        self.clearButton['state'] = tkinter.NORMAL
-        self.clearAllButton['state'] = tkinter.NORMAL
-        self.buildCsvButton['state'] = tkinter.NORMAL
-        self.testButton['state'] = tkinter.NORMAL
+        self.browseButton['state'] = NORMAL
+        self.saveButton['state'] = NORMAL
+        self.clearButton['state'] = NORMAL
+        self.clearAllButton['state'] = NORMAL
+        self.buildCsvButton['state'] = NORMAL
+        self.testButton['state'] = NORMAL
 
     def onButtonSaveClick(self):
         """Opens a file dialog to enter a save name for a csv file."""
@@ -225,7 +228,7 @@ class Window:
     def onBuildCsv(self):
         """Starts a thread for processing pdf files."""
 
-        files = self.listbox1.get(0, tkinter.END)
+        files = self.listbox1.get(0, END)
         if len(files) == 0:
             self.handleError('Files not found!')
         elif len(self.csv_filename) == 0:
@@ -249,8 +252,8 @@ class Window:
         with os.scandir(directory) as it:
             for entry in it:
                 temp = os.path.join(directory, entry.name)
-                self.listbox1.insert(tkinter.END, temp)
-        files = self.listbox1.get(0, tkinter.END)
+                self.listbox1.insert(END, temp)
+        files = self.listbox1.get(0, END)
         self.csv_filename = 'C:/Users/Jonnel/Desktop/TEST.csv'
         self.manager.set(NbsStrategy())
         # self.manager.set(D10Strategy())
@@ -266,7 +269,7 @@ class Window:
                                     self.csv_filename, self.manager)
             # self.progressbar.start(20)
             self.t1.start()
-            self.testButton['state'] = tkinter.DISABLED
+            self.testButton['state'] = DISABLED
             self.parent.after(500, self.checkQ)
 
     def checkQ(self):
@@ -297,7 +300,7 @@ class Window:
             else:
                 pass
 
-        except queue.Empty:
+        except Empty:
             self.parent.after(100, self.checkQ)
 
     class myThread(Thread):
@@ -318,11 +321,11 @@ class Window:
             """
 
             errors = ""
-            with os.scandir(self.manager.get().temp_dir) as it:
+            with scandir(self.manager.get().temp_dir) as it:
                 for entry in it:
                     with open(entry, 'r') as f:
                         txtlist = list(f.read().split())
-                        if(self.manager.get().getType() in txtlist):
+                        if(self.manager.get().get_type() in txtlist):
                             print(f"Success: file {entry} matches selected instrument family.")
                         else:
                             errors += f"Error: file {entry} is invalid!\n"
@@ -337,13 +340,13 @@ class Window:
             """Runs the convert_pdf and build_csv methods in a thread"""
             try:
                 self.manager.get().convert_pdf(self.elements)
-            except pyxpdf.xpdf.PDFSyntaxError:
+            except PDFSyntaxError:
                 messagebox.showerror(title="Error", message="Error parsing PDF file.")
             except Exception:
-                path = os.path.join(os.getenv('programdata'), "BioPy_Logs", "error.txt")
-                messagebox.showerror(title="Error", message=f"Error see logs at {path}")
-                with open(path, "a+") as f:
-                    err = traceback.format_exception(*sys.exc_info())
+                error = path.join(getenv('programdata'), "BioPy_Logs", "error.txt")
+                messagebox.showerror(title="Error", message=f"Error see logs at {error}")
+                with open(error, "a+") as f:
+                    err = format_exception(*sys.exc_info())
                     timedate = datetime.now()
                     f.write(f"{timedate}: {str(err)}\n")
                 self.qu.put("Error")
