@@ -4,7 +4,7 @@ from src.peak import Peak
 
 class D10Strategy(InstrumentStrategy):
 
-    def getType(self):
+    def get_type(self):
         """The type of instrument
 
         :return: A string literal
@@ -13,7 +13,7 @@ class D10Strategy(InstrumentStrategy):
 
         return "D-10"
 
-    def whichVersion(self, nested_list: list):
+    def which_version(self, nested_list: list):
         """Finds the version in the list.
 
         :param nested_list: A list containing info from a pdf file.
@@ -29,7 +29,7 @@ class D10Strategy(InstrumentStrategy):
         else:
             return '-1'
 
-    def isControl(self, nested_list: list):
+    def is_control(self, nested_list: list):
         """Determines if the list is a control report.
 
         :param nested_list: A list containing info from a pdf file.
@@ -43,7 +43,7 @@ class D10Strategy(InstrumentStrategy):
         else:
             return False
 
-    def checkEdgeCase(self, decoded_arr: list):
+    def check_edge_case(self, decoded_arr: list):
         """Looks for symbols such as: \"[<, 0.8, *]\" in the list,
         and concats them together.
 
@@ -122,10 +122,10 @@ class D10Strategy(InstrumentStrategy):
             arr = f.read().split()
             decoded_arr = self.wrapper_decode(arr)
 
-            self.checkEdgeCase(decoded_arr)
+            self.check_edge_case(decoded_arr)
 
-            if self.whichVersion(decoded_arr) == '4.30-2':
-                if(self.isControl(decoded_arr)):
+            if self.which_version(decoded_arr) == '4.30-2':
+                if(self.is_control(decoded_arr)):
 
                     control_info = self.create_control_table_43(decoded_arr,
                                                                 info_table)
@@ -146,7 +146,7 @@ class D10Strategy(InstrumentStrategy):
                 racknum_index = decoded_arr.index('Rack') + 2
                 rackpos_index = racknum_index + 3
 
-            if self.whichVersion(decoded_arr) == '5.00-2':
+            if self.which_version(decoded_arr) == '5.00-2':
                 injection_index = decoded_arr.index('D-10') - 1
                 racknum_index = decoded_arr.index('Rack') + 2
                 rackpos_index = decoded_arr.index('Bio-Rad') - 1

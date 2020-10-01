@@ -1,7 +1,11 @@
-import os
-import shutil
-import re
-import pandas as pd
+from shutil import rmtree
+from re import search
+from re import match
+from pandas import DataFrame
+from os import getenv
+from os import mkdir
+from os import path
+from os import scandir
 from datetime import datetime
 from pyxpdf import Document
 from pyxpdf.xpdf import TextControl
@@ -11,8 +15,8 @@ from src.peak import Peak
 class InstrumentStrategy():
 
     def __init__(self):
-        self.temp_dir = os.path.join(os.getenv('programdata'), 'BioPy_Temp')
-        self.logs = os.path.join(os.getenv('programdata'), 'BioPy_Logs')
+        self.temp_dir = path.join(getenv('programdata'), 'BioPy_Temp')
+        self.logs = path.join(getenv('programdata'), 'BioPy_Logs')
 
     def convert_pdf(self, pdf_tuples: tuple):
         """Takes a pdf file and converts it to a txt file.
@@ -22,39 +26,35 @@ class InstrumentStrategy():
         """
 
         try:
-            os.mkdir(self.temp_dir)
+            mkdir(self.temp_dir)
         except FileExistsError:
-            shutil.rmtree(self.temp_dir)
-            os.mkdir(self.temp_dir)
+            rmtree(self.temp_dir)
+            mkdir(self.temp_dir)
 
         for i in pdf_tuples:
             with open(i, 'rb') as fp:
                 doc = Document(fp)
                 if(doc.num_pages == 1):
                     tmp_arr = i.split('/')
-                    pdf_file = tmp_arr[len(tmp_arr) - 1]  # find the file name
-                    name = os.path.splitext(pdf_file)[0]  # returns name w/o ext
+                    pdf_file = tmp_arr[len(tmp_arr) - 1]  # find file name
+                    name = path.splitext(pdf_file)[0]  # remove extenstion
                     with open(f"{self.temp_dir}/{name}.txt", 'x') as file:
                         label_page = doc[0]
-                        text_control = TextControl('simple', discard_clipped=True)
-                        text = label_page.text(control=text_control)
+                        text_ctrl = TextControl('simple', discard_clipped=True)
+                        text = label_page.text(control=text_ctrl)
                         file.write(text)
                 else:
                     for j in range(doc.num_pages):
                         now = datetime.now()
-                        month = now.month
-                        day = now.day
-                        year = now.year
                         hour = now.hour
                         minute = now.minute
                         seconds = now.second
                         micro = now.microsecond
-                        with open(f"{self.temp_dir}/{month}_{day}_{year}_{hour}_{minute}_{seconds}_{micro}_{j}.txt", 'x') as file:
+                        with open(f"{self.temp_dir}/{hour}_{minute}_{seconds}_{micro}_{j}.txt", 'x') as file:
                             label_page = doc[j]
-                            text_control = TextControl('simple', discard_clipped=True)
-                            text = label_page.text(control=text_control)
+                            text_ctrl = TextControl('simple', discard_clipped=True)
+                            text = label_page.text(control=text_ctrl)
                             file.write(text)
-
 
     def wrapper_decode(self, arr: list):
         """Decode the bytes to string in the list.
@@ -143,8 +143,8 @@ class InstrumentStrategy():
         """
         info_headers = ('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern|'
                         'Well|Plate|Tube|Run|Lot|Expiration Date')
-        unknown_match = re.search('^Unknown\\d', x)
-        info_match = re.match(info_headers, x)
+        unknown_match = search('^Unknown\\d', x)
+        info_match = match(info_headers, x)
         if(info_match):
             return 0
         elif(unknown_match):
@@ -162,8 +162,8 @@ class InstrumentStrategy():
         """
 
         # Empty dataframe
-        df = pd.DataFrame()
-        with os.scandir(self.temp_dir) as it:
+        df = DataFrame()
+        with scandir(self.temp_dir) as it:
             for entry in it:
                 df = df.append(self.parse_text(entry), ignore_index=True)
 
@@ -173,4 +173,4 @@ class InstrumentStrategy():
                                     key=lambda x: self.sort_headers(x))
         df2 = df.reindex(columns=sorted_header_list)
         df2.to_csv(save_location, index=False)
-        shutil.rmtree(self.temp_dir)
+        rmtree(self.temp_dir)

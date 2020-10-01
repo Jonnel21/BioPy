@@ -1,10 +1,10 @@
-from device.instrument import InstrumentStrategy
-from peak import Peak
+from src.device.instrument import InstrumentStrategy
+from src.peak import Peak
 
 
 class VariantStrategy(InstrumentStrategy):
 
-    def getType(self):
+    def get_type(self):
         """The type of instrument
 
         :return: A string literal
@@ -13,22 +13,28 @@ class VariantStrategy(InstrumentStrategy):
 
         return "VII"
 
-    def isA1c(self, nested_list):
+    def is_a1c(self, nested_list):
+        """Determine if the list is strictly A1c
 
-        '''
-        Helper method to determine if the list is strictly A1c
-        '''
+        :param nested_list: list containing peak and header information
+        :type nested_list: lst
+        :return: boolean value
+        :rtype: bool
+        """
 
         if((Peak.V2A1CNU.value in nested_list[0]) or (Peak.V2TURBOA1C.value in nested_list[0])):
             return True
         else:
             return False
 
-    def isControl(self, nested_list):
+    def is_control(self, nested_list):
+        """Determine if the list is strictly a control
 
-        '''
-        Helper method to determine if the list is a Control
-        '''
+        :param nested_list: list containing peak and header information
+        :type nested_list: lst
+        :return: boolean value
+        :rtype: bool
+        """
 
         if(Peak.CONTROL.value in nested_list):
             return True
@@ -36,6 +42,16 @@ class VariantStrategy(InstrumentStrategy):
             return False
 
     def create_control_table(self, decoded_arr, info_table):
+        """Populates the info table specific to control reports.
+
+        :param decoded_arr: A list containing info from a pdf file.
+        :type decoded_arr: list
+        :param info_table: A list of the necessary headers from a pdf file.
+        :type info_table: list
+        :return: A populated list of necessary headers.
+        :rtype: list
+        """
+
         date_index = decoded_arr.index("Performed:") + 1
         time_index = date_index + 1
         lot_index = decoded_arr.index("Lot") + 2
@@ -91,7 +107,7 @@ class VariantStrategy(InstrumentStrategy):
             arr = f.read().split()
             decoded_arr = self.wrapper_decode(arr)
 
-            if self.isControl(decoded_arr):
+            if self.is_control(decoded_arr):
                 info_lst = self.create_control_table(decoded_arr, info_table)
                 start = decoded_arr.index('(min)') + 2  # inclusive
                 end = decoded_arr.index('Total')  # exclusive
@@ -165,7 +181,7 @@ class VariantStrategy(InstrumentStrategy):
                                  (key_rackpos, e[Peak.RACKPOS.value]),
                                  (key_total_area, e[Peak.TOTALAREA.value])])
                 continue
-            if(self.isA1c(nested_list)):
+            if(self.is_a1c(nested_list)):
                 key_ngsp = "%s_ngsp" % e[peak_index]
                 key_areap = "%s_areap" % e[peak_index]
                 key_rtime = "%s_rtime" % e[peak_index]
@@ -234,7 +250,7 @@ class VariantStrategy(InstrumentStrategy):
                                  (key_tube, e[6]),
                                  (key_total_area, e[7])])
                 continue
-            if(self.isA1c(nested_list)):
+            if(self.is_a1c(nested_list)):
                 key_ngsp = "%s_ngsp" % e[peak_index]
                 key_areap = "%s_areap" % e[peak_index]
                 key_rtime = "%s_rtime" % e[peak_index]

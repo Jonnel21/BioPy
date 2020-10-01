@@ -1,10 +1,10 @@
-from device.instrument import InstrumentStrategy
-from peak import Peak
+from src.device.instrument import InstrumentStrategy
+from src.peak import Peak
 
 
 class NbsStrategy(InstrumentStrategy):
 
-    def getType(self):
+    def get_type(self):
         """The type of instrument
 
         :return: A string literal
