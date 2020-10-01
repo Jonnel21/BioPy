@@ -4,10 +4,8 @@
 name: BioPy
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  repository_dispatch:
+    types: [trigger-workflow-2]
 
 jobs:
   build:
@@ -17,6 +15,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.client_payload.sha }}
 
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
