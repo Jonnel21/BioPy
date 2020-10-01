@@ -5,7 +5,7 @@ name: BioPy
 
 on:
   repository_dispatch:
-    types: [trigger-workflow-2]
+    types: [start-build]
 
 jobs:
   build:
