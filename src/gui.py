@@ -328,7 +328,7 @@ class Window:
                         if(self.manager.get().get_type() in txtlist):
                             print(f"Success: file {entry} matches selected instrument family.")
                         else:
-                            errors += f"Error: file {entry} is invalid!\n"
+                            errors += f"Error: file {entry.path} is invalid!\n"
             if(errors):
                 self.qu.put("Error")
                 messagebox.showerror(title="Error", message=errors)

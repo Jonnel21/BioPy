@@ -82,9 +82,16 @@ class SortHeadersTestCase(unittest.TestCase):
         test_result = instrument.sort_headers(param)
         self.assertEqual(test_result, expected_result)
 
-    def test_lot(self):
+    def test_lotnum(self):
         instrument = InstrumentStrategy()
-        param = 'Lot'
+        param = 'Lot #'
+        expected_result = 0
+        test_result = instrument.sort_headers(param)
+        self.assertEqual(test_result, expected_result)
+
+    def test_lotid(self):
+        instrument = InstrumentStrategy()
+        param = 'Lot ID'
         expected_result = 0
         test_result = instrument.sort_headers(param)
         self.assertEqual(test_result, expected_result)

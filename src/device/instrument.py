@@ -44,13 +44,16 @@ class InstrumentStrategy():
                         text = label_page.text(control=text_ctrl)
                         file.write(text)
                 else:
+                    tmp_arr = i.split('/')
+                    pdf_file = tmp_arr[len(tmp_arr) - 1]  # find file name
+                    name = path.splitext(pdf_file)[0]
                     for j in range(doc.num_pages):
                         now = datetime.now()
                         hour = now.hour
                         minute = now.minute
                         seconds = now.second
                         micro = now.microsecond
-                        with open(f"{self.temp_dir}/{hour}_{minute}_{seconds}_{micro}_{j}.txt", 'x') as file:
+                        with open(f"{self.temp_dir}/{name}_{hour}_{minute}_{seconds}_{micro}_{j}.txt", 'x') as file:
                             label_page = doc[j]
                             text_ctrl = TextControl('simple', discard_clipped=True)
                             text = label_page.text(control=text_ctrl)
@@ -142,7 +145,7 @@ class InstrumentStrategy():
         :rtype: number
         """
         info_headers = ('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern|'
-                        'Well|Plate|Tube|Run|Lot|Expiration Date')
+                        'Well|Plate|Tube|Run|Lot #|Lot ID|Expiration Date')
         unknown_match = search('^Unknown\\d', x)
         info_match = match(info_headers, x)
         if(info_match):
