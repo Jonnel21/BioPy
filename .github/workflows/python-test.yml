@@ -84,7 +84,7 @@ jobs:
     - name: Upload setup.exe artifact
       uses: actions/upload-artifact@v2
       with:
-        name: BioPy_Setup_$ {{ env.VERSION }}
+        name: BioPy_Setup_${{ env.VERSION }}
         path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_*
 #     - name: Lint with flake8
 #       run: |
