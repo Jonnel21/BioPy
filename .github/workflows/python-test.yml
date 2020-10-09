@@ -43,12 +43,11 @@ jobs:
         $version= Get-Content version.txt -Tail 1
         echo "VERSION=$version" >> $GITHUB_ENV
         echo $VERSION
-        cat $GITHUB_ENV
+        echo $GITHUB_ENV
         # echo "::set-env name=VERSION::$version"
 
     - name: Test with pytest
       run: |
-        echo $VERSION
         pytest
       working-directory: tests
 
