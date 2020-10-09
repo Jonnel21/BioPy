@@ -42,6 +42,7 @@ jobs:
         python updateVersion.py
         $version= Get-Content version.txt -Tail 1
         echo "VERSION=$version" >> $GITHUB_ENV
+        echo $VERSION
         # echo "::set-env name=VERSION::$version"
 
     - name: Test with pytest
