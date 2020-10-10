@@ -76,28 +76,13 @@ jobs:
       
     - name: Set env
       run: |
-        echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-        echo $GITHUB_SHA_SHORT
+        echo "color=yellow" >> $GITHUB_ENV
       
     - name: Test
-      run: echo ${{ GITHUB_ENV.GITHUB_SHA_SHORT }}
-
-    # - name: Sign setup.exe
-    #   uses: dlemstra/code-sign-action@v1
-    #   with:
-    #     certificate: '${{ secrets.CERTIFICATE }}'
-    #     folder: 'src\dist\gui\setup\mysetup.exe'
-    #     recursive: false
+      run: echo ${{ color }}
 
     - name: Upload setup.exe artifact
       uses: actions/upload-artifact@v2
       with:
         name: BioPy_Setup_
         path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_* 
-#     - name: Lint with flake8
-#       run: |
-#         # stop the build if there are Python syntax errors or undefined names
-#         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-#         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-#         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
