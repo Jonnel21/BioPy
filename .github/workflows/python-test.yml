@@ -80,7 +80,7 @@ jobs:
         echo $GITHUB_SHA_SHORT
       
     - name: Test
-      run: echo $GITHUB_SHA_SHORT
+      run: echo ${GITHUB_SHA_SHORT}
 
     # - name: Sign setup.exe
     #   uses: dlemstra/code-sign-action@v1
