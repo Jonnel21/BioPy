@@ -43,6 +43,8 @@ jobs:
         $version= Get-Content version.txt -Tail 1
         echo "VERSION=$version" >> $GITHUB_ENV
         # echo "::set-env name=VERSION::$version"
+      env:
+        VERSION: $version
 
     - name: Test with pytest
       run: |
@@ -85,7 +87,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: BioPy_Setup_${{ env.VERSION }}
-        path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_*
+        path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_* 
 #     - name: Lint with flake8
 #       run: |
 #         # stop the build if there are Python syntax errors or undefined names
