@@ -73,6 +73,12 @@ jobs:
       run: ./iscc BioPy_Setup.iss
       working-directory: scripts
       shell: pwsh
+      
+    - name: Set env
+      run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+      
+    - name: Test
+      run: echo $GITHUB_SHA_SHORT
 
     # - name: Sign setup.exe
     #   uses: dlemstra/code-sign-action@v1
@@ -84,7 +90,7 @@ jobs:
     - name: Upload setup.exe artifact
       uses: actions/upload-artifact@v2
       with:
-        name: BioPy_Setup_${{ version_number }}
+        name: BioPy_Setup_
         path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_* 
 #     - name: Lint with flake8
 #       run: |
