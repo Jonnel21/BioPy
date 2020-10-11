@@ -79,7 +79,7 @@ jobs:
         echo "color=yellow" >> $GITHUB_ENV
       
     - name: Test
-      run: echo ${{ color }}
+      run: echo ${{ env.color }}
 
     - name: Upload setup.exe artifact
       uses: actions/upload-artifact@v2
