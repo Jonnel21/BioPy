@@ -78,7 +78,7 @@ jobs:
       run: echo "color=yellow" >> $GITHUB_ENV
       
     - name: Test
-      run: $color
+      run: echo $color
       shell: pwsh
 
     - name: Upload setup.exe artifact
