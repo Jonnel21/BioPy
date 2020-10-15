@@ -37,12 +37,13 @@ jobs:
       working-directory: D:\a\BioPy\BioPy
 
     - name: Update build/version number
+      id: version_step
       run: |
         python semvar.py ${{ github.run_number }}
         python updateVersion.py
         $version= Get-Content version.txt -Tail 1
         # echo "version_number=$version" >> $GITHUB_ENV
-        echo "::set-env name=VERSION::$version"
+        echo "::set-output name=VERSION::$version"
 
     - name: Test with pytest
       run: |
@@ -61,5 +62,5 @@ jobs:
     - name: Upload setup.exe artifact
       uses: actions/upload-artifact@v2
       with:
-        name: BioPy_Setup_${{ env.VERSION }}
+        name: BioPy_Setup_${{ steps.version_step.outputs.VERSION }}
         path: src\dist\gui\BioPy_Setup_*\BioPy_Setup_* 
