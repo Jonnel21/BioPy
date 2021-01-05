@@ -17,7 +17,7 @@ from queue import Queue, Empty
 from pyxpdf.xpdf import PDFSyntaxError
 from datetime import datetime
 import tkinter.filedialog as fd
-import sys
+import sys, os
 
 
 class Window:
@@ -311,6 +311,14 @@ class Window:
             self.save = save
             self.manager = manager
 
+        def checkFileSize(self):
+            """Remove txt files that are not needed based on a number of bytes."""
+
+            with scandir(self.manager.get().temp_dir) as it:
+                for entry in it:
+                    if(entry.stat().st_size <= 300):
+                        os.remove(entry.path)
+
         def checkFiles(self):
             """Verifies that the files in the listbox
             is the same as what's selected by the
@@ -321,6 +329,7 @@ class Window:
             """
 
             errors = ""
+            self.checkFileSize()
             with scandir(self.manager.get().temp_dir) as it:
                 for entry in it:
                     with open(entry, 'r') as f:
