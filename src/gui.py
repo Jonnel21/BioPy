@@ -126,15 +126,23 @@ class Window:
         :return: A messagebox showing a summary, version, and authors.
         :rtype: messagebox
         """
-
-        txt = path.join(sys._MEIPASS, "version.txt")
-        with open(txt, "r") as f:
-            version = f.readline()
-        about = "A pdf to csv tool for patient & control samples.\n\n"
-        version += "\n"
-        authors = "Jonnel Alcantara & Kevin Nganga"
-        msg = f"{about}Version: {version}Authors: {authors}"
-        return messagebox.showinfo(title="About", message=msg)
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            print('running in a PyInstaller bundle')
+            txt = path.join(sys._MEIPASS, "version.txt")
+            with open(txt, "r") as f:
+                version = f.readline()
+            about = "A pdf to csv tool for patient & control samples.\n\n"
+            version += "\n"
+            authors = "Jonnel Alcantara & Kevin Nganga"
+            msg = f"{about}Version: {version}Authors: {authors}"
+            return messagebox.showinfo(title="About", message=msg)
+        else:
+            print('running in a normal Python process')
+            about = "A pdf to csv tool for patient & control samples.\n\n"
+            version = "x.x.x+build xxx\n"
+            authors = "Jonnel Alcantara & Kevin Nganga"
+            msg = f"{about}Version: {version}Authors: {authors}"
+            return messagebox.showinfo(title="About", message=msg)
 
     def handleError(self, txt):
         """wrapper method to customize text of error
