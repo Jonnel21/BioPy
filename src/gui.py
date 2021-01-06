@@ -40,6 +40,7 @@ class Window:
 
         self.menubar = Menu(parent)
         self.menubar.add_command(label="About", command=self.onMenu)
+        self.menubar.add_command(label="Logs", command=self.onLogs)
 
         self.saveContainer = Frame(parent)
         self.saveContainer.pack()
@@ -119,6 +120,18 @@ class Window:
 
         # Positions the window in the center of the page.
         self.parent.geometry("+{}+{}".format(positionRight, positionDown))
+
+    def onLogs (self):
+        """Open log file directory in programdata.
+
+        :return: A messagebox if directory could not be found.
+        :rtype: messagebox
+        """
+        try:
+            os.startfile(self.logs)
+        except FileNotFoundError:
+            msg = "Log directory could not be found!\nPlease restart the application."
+            return messagebox.showerror(title="Error", message=msg)
 
     def onMenu(self):
         """Handles when the 'About' menu item is clicked.
