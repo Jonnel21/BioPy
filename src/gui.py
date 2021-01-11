@@ -310,16 +310,21 @@ class Window:
 
             elif str == "Done":
                 self.progressbar.stop()
-                if(messagebox.askquestion('Info', 'Complete!',
-                                          parent=self.container1,
-                                          icon=messagebox.INFO,
-                                          type=messagebox.OK)):
+                msg = "Complete!\nWould you like to clear the current list?"
+                if(messagebox.askyesno('Info', msg,
+                                       parent=self.container1,
+                                       icon=messagebox.QUESTION,
+                                       type=messagebox.YESNO)):
                     self.enableAllButtons()
                     self.progressbar.pack_forget()
-                    self.savePath.insert(0, "Enter save location")
+                    self.clearListBox()
+                    self.savePath.insert(0, "Enter save location...")
                     self.csv_filename = ""
-            else:
-                pass
+                else:
+                    self.enableAllButtons()
+                    self.progressbar.pack_forget()
+                    self.savePath.insert(0, "Enter save location...")
+                    self.csv_filename = ""
 
         except Empty:
             self.parent.after(100, self.checkQ)
