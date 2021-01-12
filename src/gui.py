@@ -259,8 +259,9 @@ class Window:
         else:
             self.progressbar.pack()
             self.t1 = self.myThread(self.q, files,
-                                    self.csv_filename, self.manager)
+                                    self.csv_filename, self.manager, self.progressbar)
             self.progressbar.start(20)
+            self.t1.emptyQueue()
             self.t1.start()
             self.disableAllButtons()
             self.parent.after(100, self.checkQ)
@@ -287,7 +288,7 @@ class Window:
         else:
             self.progressbar.pack()
             self.t1 = self.myThread(self.q, files,
-                                    self.csv_filename, self.manager)
+                                    self.csv_filename, self.manager, self.progressbar)
             # self.progressbar.start(20)
             self.t1.start()
             self.testButton['state'] = DISABLED
@@ -325,12 +326,13 @@ class Window:
             self.parent.after(100, self.checkQ)
 
     class myThread(Thread):
-        def __init__(self, qu, elements, save, manager):
+        def __init__(self, qu, elements, save, manager, pg):
             Thread.__init__(self)
             self.qu = qu
             self.elements = elements
             self.save = save
             self.manager = manager
+            self.pg = pg
 
         def checkFileSize(self):
             """Remove txt files that are not needed based on a number of bytes."""
@@ -372,7 +374,16 @@ class Window:
                 self.manager.get().convert_pdf(self.elements)
             except PDFSyntaxError:
                 messagebox.showerror(title="Error", message="Error parsing PDF file.")
+                self.pg.pack_forget()
+                self.qu.put("Error")
+            except FileExistsError:
+                msg = "Potential duplicate PDFs in the List. Please remove the duplicate(s)."
+                self.pg.pack_forget()
+                messagebox.showerror(title="Error", message=msg)
+                self.qu.put("Error")
+ 
             except Exception:
+                self.pg.pack_forget()
                 error = path.join(getenv('programdata'), "BioPy_Logs", "error.txt")
                 messagebox.showerror(title="Error", message=f"Error see logs at {error}")
                 with open(error, "a+") as f:
@@ -394,6 +405,12 @@ class Window:
             """
 
             return self.qu
+
+        def emptyQueue(self):
+            """Empty Queue before starting thread"""
+
+            while not self.qu.empty():
+                self.qu.get()
 
 
 root = Tk()
