@@ -6,7 +6,7 @@ Internal tool used to scrape data from a pdf on the D-10, Variants, and VNBS pro
 [Pre-Release](https://github.com/Jonnel21/BioPy/releases)
 
 ## Usage
-Install [microsoft c++ build tools](https://visualstudio.microsoft.com/downloads/)
+Install [microsoft c++ build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 Install modules and packages via `pip install -r requirements.txt`
 
