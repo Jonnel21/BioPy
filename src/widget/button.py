@@ -8,9 +8,7 @@ class HoverButton(Button):
         self.bind('<Leave>', self.on_leave)
 
     def on_enter(self, event=None):
-        print('hovering...')
         self['relief'] = 'groove'
 
     def on_leave(self, event=None):
-        print('Bye Bye!')
         self['relief'] = 'raised'
