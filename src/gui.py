@@ -419,5 +419,5 @@ class Window:
 
 root = Tk()
 app = Window(root)
-root.iconphoto(False, PhotoImage(file="../assets/biopy_icon.png"))
+root.iconphoto(False, PhotoImage(file="./assets/biopy_icon.png"))
 root.mainloop()
