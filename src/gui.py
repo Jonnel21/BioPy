@@ -17,7 +17,9 @@ from queue import Queue, Empty
 from pyxpdf.xpdf import PDFSyntaxError
 from datetime import datetime
 import tkinter.filedialog as fd
-import sys, os
+from src.widget.button import HoverButton
+import sys
+import os
 
 
 class Window:
@@ -60,29 +62,29 @@ class Window:
                                 selectmode=EXTENDED)
         self.listbox1.pack(fill=BOTH, expand=1)
 
-        self.browseButton = Button(self.container1, text='Browse',
-                                   background='green',
-                                   command=self.onBrowseClick)
+        self.browseButton = HoverButton(self.container1, text='Browse',
+                                        background='green',
+                                        command=self.onBrowseClick)
         self.browseButton.pack(side=LEFT)
 
-        self.clearAllButton = Button(self.container1, text='Clear All',
-                                     command=self.clearListBox)
+        self.clearAllButton = HoverButton(self.container1, text='Clear All',
+                                          command=self.clearListBox)
         self.clearAllButton.pack(side=RIGHT)
 
-        self.clearButton = Button(self.container1, text='Clear',
-                                  command=self.clear)
+        self.clearButton = HoverButton(self.container1, text='Clear',
+                                       command=self.clear)
         self.clearButton.pack(side=RIGHT)
 
-        self.buildCsvButton = Button(self.container1, text='Start!',
-                                     command=self.onBuildCsv)
+        self.buildCsvButton = HoverButton(self.container1, text='Start!',
+                                          command=self.onBuildCsv)
         self.buildCsvButton.pack()
 
         self.savePath = Listbox(self.saveContainer, width=50, height=1)
         self.savePath.insert(0, "Enter save location...")
         self.savePath.pack(side=LEFT)
 
-        self.saveButton = Button(self.saveContainer, text='Save As...',
-                                 command=self.onButtonSaveClick)
+        self.saveButton = HoverButton(self.saveContainer, text='Save As...',
+                                      command=self.onButtonSaveClick)
         self.saveButton.pack(side=RIGHT)
 
         self.testButton = Button(self.container1,
@@ -121,7 +123,7 @@ class Window:
         # Positions the window in the center of the page.
         self.parent.geometry("+{}+{}".format(positionRight, positionDown))
 
-    def onLogs (self):
+    def onLogs(self):
         """Open log file directory in programdata.
 
         :return: A messagebox if directory could not be found.
@@ -130,7 +132,8 @@ class Window:
         try:
             os.startfile(self.logs)
         except FileNotFoundError:
-            msg = "Log directory could not be found!\nPlease restart the application."
+            msg = "Log directory could not be found!\n" \
+                  "Please restart the application."
             return messagebox.showerror(title="Error", message=msg)
 
     def onMenu(self):
@@ -198,7 +201,7 @@ class Window:
                     print(f.name)
                     self.listbox1.insert(END, f.name)
         except Exception:
-            error = path.join(getenv('programdata'), "BioPy_Logs", "error.txt")
+            error = path.join(self.logs, "error.txt")
             self.handleError(f"Error see logs at {error}")
             with open(error, "a+") as f:
                 err = format_exception(*sys.exc_info())
@@ -259,7 +262,10 @@ class Window:
         else:
             self.progressbar.pack()
             self.t1 = self.myThread(self.q, files,
-                                    self.csv_filename, self.manager, self.progressbar)
+                                    self.csv_filename,
+                                    self.manager,
+                                    self.progressbar,
+                                    self.logs)
             self.progressbar.start(20)
             self.t1.emptyQueue()
             self.t1.start()
@@ -268,8 +274,8 @@ class Window:
 
     def onAutomatedTestClick(self):
         vnbs = 'vnbs'
-        d10 = 'd10'
-        variant = 'variant'
+        # d10 = 'd10'
+        # variant = 'variant'
         directory = f'C:/Users/Jonnel/Documents/pdf/{vnbs}/'
         with os.scandir(directory) as it:
             for entry in it:
@@ -288,7 +294,10 @@ class Window:
         else:
             self.progressbar.pack()
             self.t1 = self.myThread(self.q, files,
-                                    self.csv_filename, self.manager, self.progressbar)
+                                    self.csv_filename,
+                                    self.manager,
+                                    self.progressbar,
+                                    self.logs)
             # self.progressbar.start(20)
             self.t1.start()
             self.testButton['state'] = DISABLED
@@ -331,16 +340,17 @@ class Window:
             self.parent.after(100, self.checkQ)
 
     class myThread(Thread):
-        def __init__(self, qu, elements, save, manager, pg):
-            Thread.__init__(self)
+        def __init__(self, qu, elements, save, manager, pg, logs):
+            super().__init__()
             self.qu = qu
             self.elements = elements
             self.save = save
             self.manager = manager
             self.pg = pg
+            self.logs = logs
 
         def checkFileSize(self):
-            """Remove txt files that are not needed based on a number of bytes."""
+            """Remove txt files that appear to be incomplete or invalid."""
 
             with scandir(self.manager.get().temp_dir) as it:
                 for entry in it:
@@ -363,7 +373,9 @@ class Window:
                     with open(entry, 'r') as f:
                         txtlist = list(f.read().split())
                         if(self.manager.get().get_type() in txtlist):
-                            print(f"Success: file {entry} matches selected instrument family.")
+                            msg = f"Success: file {entry}" \
+                                   " matches selected instrument family."
+                            print(msg)
                         else:
                             errors += f"Error: file {entry.path} is invalid!\n"
             if(errors):
@@ -380,16 +392,19 @@ class Window:
             except PDFSyntaxError:
                 self.pg.pack_forget()
                 self.qu.put("Error")
-                messagebox.showerror(title="Error", message="Error parsing PDF file.")
+                msg = "Error: file(s) may not be in PDF format."
+                messagebox.showerror(title="Error", message=msg)
             except FileExistsError:
-                msg = "Potential duplicate PDFs in the List. Please remove the duplicate(s)."
                 self.pg.pack_forget()
                 self.qu.put("Error")
+                msg = "Potential duplicate PDF in the List.\n" \
+                      "Please remove the duplicate(s)."
                 messagebox.showerror(title="Error", message=msg)
             except Exception:
                 self.pg.pack_forget()
-                error = path.join(getenv('programdata'), "BioPy_Logs", "error.txt")
-                messagebox.showerror(title="Error", message=f"Error see logs at {error}")
+                error = path.join(self.logs, "error.txt")
+                msg = "Error: see logs for more details."
+                messagebox.showerror(title="Error", message=msg)
                 with open(error, "a+") as f:
                     err = format_exception(*sys.exc_info())
                     timedate = datetime.now()
@@ -419,5 +434,8 @@ class Window:
 
 root = Tk()
 app = Window(root)
-root.iconphoto(False, PhotoImage(file="./assets/biopy_icon.png"))
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    root.iconphoto(False, PhotoImage(file="./assets/biopy_icon.png"))
+else:
+    root.iconphoto(False, PhotoImage(file="../assets/biopy_icon.png"))
 root.mainloop()
