@@ -22,8 +22,11 @@ class BuildCsvTestCase(unittest.TestCase):
         self.d10_patient_430 = '../pdf/d10/patient/4.30'
         self.d10_patient_500 = '../pdf/d10/patient/5.00'
         self.d10_control_430 = '../pdf/d10/control/4.30/test'
-        self.variant_dir = '../pdf/variant/'
-        self.vnbs_dir = '../pdf/vnbs/'
+        self.variant_patient_a1c = '../pdf/variant/A1c'
+        self.variant_patient_bthal = '../pdf/variant/BThal/patient'
+        self.variant_control_bthal = '../pdf/variant/BThal/control'
+        self.variant_patient_turbo_a1c = '../pdf/variant/Turbo A1c'
+        self.vnbs_patient = '../pdf/vnbs/patient'
 
         # initialize save directory
         self.save_dir = os.path.abspath(os.getenv('programdata'))
@@ -45,14 +48,14 @@ class BuildCsvTestCase(unittest.TestCase):
     @unittest.skip('Skipping...')
     def test_variant(self):
         save = os.path.join(self.save_dir, 'patient_variant.csv')
-        self.instrument.convert_pdf_test(self.variant_dir)
+        self.instrument.convert_pdf_test(self.variant_patient_a1c)
         self.variant.build_csv(save)
         self.assertTrue(os.path.isfile(save))
 
     @unittest.skip('Skipping...')
     def test_vnbs(self):
         save = os.path.join(self.save_dir, 'patient_vnbs.csv')
-        self.instrument.convert_pdf_test(self.vnbs_dir)
+        self.instrument.convert_pdf_test(self.vnbs_patient)
         self.nbs.build_csv(save)
         self.assertTrue(os.path.isfile(save))
 
