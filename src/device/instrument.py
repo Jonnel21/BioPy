@@ -145,7 +145,7 @@ class InstrumentStrategy():
         :rtype: number
         """
         info_headers = ('Sample|Date|Time|Inj|Rack|Total Hb Area|Pattern|'
-                        'Well|Plate|Tube|Run|Lot #|Lot ID|Expiration Date')
+                        'Well|Plate|Tube|Run|Lot #|Lot ID|Expiration Date|S/N')
         unknown_match = search('^Unknown\\d', x)
         info_match = match(info_headers, x)
         if(info_match):

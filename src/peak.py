@@ -18,6 +18,7 @@ class Peak(Enum):
     RACKPOS = 5
     TOTALAREA = 6
     PATTERN = 7
+    SERIAL = 7
 
     # Variant Family
     TYPE = 9  # index in decoded_arr

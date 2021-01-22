@@ -378,15 +378,14 @@ class Window:
             try:
                 self.manager.get().convert_pdf(self.elements)
             except PDFSyntaxError:
-                messagebox.showerror(title="Error", message="Error parsing PDF file.")
                 self.pg.pack_forget()
                 self.qu.put("Error")
+                messagebox.showerror(title="Error", message="Error parsing PDF file.")
             except FileExistsError:
                 msg = "Potential duplicate PDFs in the List. Please remove the duplicate(s)."
                 self.pg.pack_forget()
-                messagebox.showerror(title="Error", message=msg)
                 self.qu.put("Error")
- 
+                messagebox.showerror(title="Error", message=msg)
             except Exception:
                 self.pg.pack_forget()
                 error = path.join(getenv('programdata'), "BioPy_Logs", "error.txt")

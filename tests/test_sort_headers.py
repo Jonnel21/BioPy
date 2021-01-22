@@ -12,6 +12,13 @@ class SortHeadersTestCase(unittest.TestCase):
         test_result = instrument.sort_headers(param)
         self.assertEqual(test_result, expected_result)
 
+    def test_serial(self):
+        instrument = InstrumentStrategy()
+        param = "S/N"
+        expected_result = 0
+        test_result = instrument.sort_headers(param)
+        self.assertEqual(test_result, expected_result)
+
     def test_date(self):
         instrument = InstrumentStrategy()
         param = 'Date'
