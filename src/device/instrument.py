@@ -18,6 +18,44 @@ class InstrumentStrategy():
         self.temp_dir = path.join(getenv('programdata'), 'BioPy_Temp')
         self.logs = path.join(getenv('programdata'), 'BioPy_Logs')
 
+    def convert_pdf_test(self, dir_path: str):
+        """Takes a pdf file and converts it to a txt file.
+
+        :param pdf_tuples: a tuple of pdf file paths.
+        :type pdf_tuples: tuple
+        """
+
+        try:
+            mkdir(self.temp_dir)
+        except FileExistsError:
+            rmtree(self.temp_dir)
+            mkdir(self.temp_dir)
+
+        with scandir(dir_path) as it:
+            for entry in it:
+                with open(entry, 'rb') as fp:
+                    doc = Document(fp)
+                    if(doc.num_pages == 1):
+                        pdf_file = entry.name
+                        with open(f"{self.temp_dir}/{pdf_file}.txt", 'x') as file:
+                            label_page = doc[0]
+                            text_ctrl = TextControl('simple', discard_clipped=True)
+                            text = label_page.text(control=text_ctrl)
+                            file.write(text)
+                    else:
+                        name = entry.name
+                        for j in range(doc.num_pages):
+                            now = datetime.now()
+                            hour = now.hour
+                            minute = now.minute
+                            seconds = now.second
+                            micro = now.microsecond
+                            with open(f"{self.temp_dir}/{name}_{hour}_{minute}_{seconds}_{micro}_{j}.txt", 'x') as file:
+                                label_page = doc[j]
+                                text_ctrl = TextControl('simple', discard_clipped=True)
+                                text = label_page.text(control=text_ctrl)
+                                file.write(text)
+
     def convert_pdf(self, pdf_tuples: tuple):
         """Takes a pdf file and converts it to a txt file.
 
@@ -164,11 +202,14 @@ class InstrumentStrategy():
         :type save_location: str
         """
 
-        # Empty dataframe
         df = DataFrame()
+        lst = list()
+
         with scandir(self.temp_dir) as it:
             for entry in it:
-                df = df.append(self.parse_text(entry), ignore_index=True)
+                lst.append(self.parse_text(entry))
+
+        df = df.append(lst, ignore_index=True)
 
         # sort headers & save to csv file format
         header_list = list(df.columns.values)

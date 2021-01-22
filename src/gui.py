@@ -1,5 +1,5 @@
 from tkinter import Listbox, Frame, Button
-from tkinter import Tk, ttk, Menu
+from tkinter import Tk, ttk, Menu, PhotoImage
 from tkinter import messagebox, StringVar
 from tkinter import Scrollbar, Radiobutton
 from tkinter import EXTENDED, HORIZONTAL
@@ -419,4 +419,5 @@ class Window:
 
 root = Tk()
 app = Window(root)
+root.iconphoto(False, PhotoImage(file="../assets/biopy_icon.png"))
 root.mainloop()

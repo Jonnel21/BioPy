@@ -6,20 +6,7 @@
 dev
 production
 __pycache__
-xpdf_python/
-Result
-Test_PDF
-temp.py
-v2
-vnbs
-tester.py
-NewInterface
-animal.py
-human.py
 superrun.py
-walkable.py
-xpdf_test.py
-BioPy Screenshots
 build
 dist
 gui.spec

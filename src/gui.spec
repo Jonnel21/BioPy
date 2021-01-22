@@ -26,7 +26,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True , version='..\\CI\\version.py')
+          console=True , version='..\\CI\\version.py', icon='..\\assets\\biopy_exe.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
