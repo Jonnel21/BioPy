@@ -20,6 +20,9 @@ class Peak(Enum):
     PATTERN = 7
     SERIAL = 7
 
+    # 4.30 Control only
+    SERIAL_CONT = 8
+
     # Variant Family
     TYPE = 9  # index in decoded_arr
     V2TURBOA1C = "V2TURBO_A1c_2.0"

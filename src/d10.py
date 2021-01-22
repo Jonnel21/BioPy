@@ -93,6 +93,7 @@ class D10Strategy(InstrumentStrategy):
         racknum_index = decoded_arr.index('Rack') + 2
         rackpos_index = racknum_index + 3
         total_area_index = decoded_arr.index('Area:') + 1
+        serial_index = decoded_arr.index('S/N:') + 1
 
         info_table.append(decoded_arr[lot_id_index])
         info_table.append(decoded_arr[lot_index])
@@ -101,6 +102,7 @@ class D10Strategy(InstrumentStrategy):
         info_table.append(decoded_arr[injection_index])
         info_table.append(decoded_arr[racknum_index])
         info_table.append(decoded_arr[rackpos_index])
+        info_table.append(decoded_arr[serial_index])
         info_table.append(decoded_arr[total_area_index])
 
         return info_table
@@ -127,6 +129,7 @@ class D10Strategy(InstrumentStrategy):
             if self.which_version(decoded_arr) == '4.30-2':
                 if(self.is_control(decoded_arr)):
 
+                    # 4.30 control specific
                     control_info = self.create_control_table_43(decoded_arr,
                                                                 info_table)
                     start = decoded_arr.index('%')  # inclusive
@@ -142,19 +145,23 @@ class D10Strategy(InstrumentStrategy):
                     f.close()
                     return test_dict
 
+                # 4.30 patient specific
                 injection_index = decoded_arr.index('Method:') - 1
                 racknum_index = decoded_arr.index('Rack') + 2
                 rackpos_index = racknum_index + 3
 
+                # 5.00 patient specific
             if self.which_version(decoded_arr) == '5.00-2':
                 injection_index = decoded_arr.index('D-10') - 1
                 racknum_index = decoded_arr.index('Rack') + 2
                 rackpos_index = decoded_arr.index('Bio-Rad') - 1
 
+            # 4.30 & 5.00 patient
             sampleid_index = decoded_arr.index('ID:') + 1
             date_index = decoded_arr.index('date') + 1
             time_index = date_index + 1
             total_area_index = decoded_arr.index('Area:') + 1
+            serial_index = decoded_arr.index('S/N:') + 1
 
             # peak table indicies for D-10 only
             start = decoded_arr.index('%')  # inclusive
@@ -167,6 +174,7 @@ class D10Strategy(InstrumentStrategy):
             info_table.append(decoded_arr[racknum_index])
             info_table.append(decoded_arr[rackpos_index])
             info_table.append(decoded_arr[total_area_index])
+            info_table.append(decoded_arr[serial_index])
 
             peak_table = decoded_arr[start + 1: end]
 
@@ -200,6 +208,7 @@ class D10Strategy(InstrumentStrategy):
                 key_injection = "Inj #"
                 key_rack = "Rack #"
                 key_rackpos = "Rack Position"
+                key_serial = "S/N"
                 key_total_area = "Total Hb Area"
                 real_dict.update([(key_sampleID, e[Peak.SAMPLE.value]),
                                  (key_date, e[Peak.DATE.value]),
@@ -207,7 +216,8 @@ class D10Strategy(InstrumentStrategy):
                                  (key_injection, e[Peak.INJ.value]),
                                  (key_rack, e[Peak.RACK.value]),
                                  (key_rackpos, e[Peak.RACKPOS.value]),
-                                 (key_total_area, e[Peak.TOTALAREA.value])])
+                                 (key_serial, e[Peak.SERIAL.value]),
+                                 (key_total_area, e[Peak.TOTALAREA.value]), ])
                 continue
 
             key_rtime = "%s_rtime" % e[peak_index]  # key retention time
@@ -232,7 +242,6 @@ class D10Strategy(InstrumentStrategy):
         :rtype: dict
         """
 
-        # print("This is the name: %s" % self.name)
         peak_index = 0
         real_dict = {}
         for i, e in enumerate(nested_list):
@@ -246,6 +255,7 @@ class D10Strategy(InstrumentStrategy):
                 key_rack = "Rack #"
                 key_rackpos = "Rack Position"
                 key_total_area = "Total Hb Area"
+                key_serial = "S/N"
                 real_dict.update([(key_LotID, e[0]),
                                  (key_lot, e[1]),
                                  (key_date, e[2]),
@@ -253,7 +263,8 @@ class D10Strategy(InstrumentStrategy):
                                  (key_injection, e[4]),
                                  (key_rack, e[5]),
                                  (key_rackpos, e[6]),
-                                 (key_total_area, e[7])])
+                                 (key_serial, e[Peak.SERIAL.value]),
+                                 (key_total_area, e[8]), ])
                 continue
 
             key_rtime = "%s_rtime" % e[peak_index]  # key retention time

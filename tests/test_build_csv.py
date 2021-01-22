@@ -19,38 +19,62 @@ class BuildCsvTestCase(unittest.TestCase):
         self.nbs = NbsStrategy()
 
         # initialize pdf directories
-        self.d10_dir = '../pdf/d10/'
+        self.d10_patient_430 = '../pdf/d10/patient/4.30'
+        self.d10_patient_500 = '../pdf/d10/patient/5.00'
+        self.d10_control_430 = '../pdf/d10/control/4.30/test'
         self.variant_dir = '../pdf/variant/'
         self.vnbs_dir = '../pdf/vnbs/'
 
         # initialize save directory
         self.save_dir = os.path.abspath(os.getenv('programdata'))
 
+    @unittest.skip('Skipping...')
     def test_csv_file(self):
         save = os.path.join(self.save_dir, 'one_entry.csv')
         self.instrument.convert_pdf_test(self.d10_dir)
         self.d10.build_csv(save)
         self.assertTrue(os.path.isfile(save))
 
-    # @unittest.skip('Skipping...')
+    @unittest.skip('Skipping...')
     def test_d10_50(self):
         save = os.path.join(self.save_dir, 'patient_D10_5.0.csv')
         self.instrument.convert_pdf_test(self.d10_dir)
         self.d10.build_csv(save)
         self.assertTrue(os.path.isfile(save))
 
-    # @unittest.skip('Skipping...')
+    @unittest.skip('Skipping...')
     def test_variant(self):
         save = os.path.join(self.save_dir, 'patient_variant.csv')
         self.instrument.convert_pdf_test(self.variant_dir)
         self.variant.build_csv(save)
         self.assertTrue(os.path.isfile(save))
 
-    # @unittest.skip('Skipping...')
+    @unittest.skip('Skipping...')
     def test_vnbs(self):
         save = os.path.join(self.save_dir, 'patient_vnbs.csv')
         self.instrument.convert_pdf_test(self.vnbs_dir)
         self.nbs.build_csv(save)
+        self.assertTrue(os.path.isfile(save))
+
+    # @unittest.skip('Skipping...')
+    def test_d10_patient_430(self):
+        save = os.path.join(self.save_dir, 'patient_D10_4.30.csv')
+        self.instrument.convert_pdf_test(self.d10_patient_430)
+        self.d10.build_csv(save)
+        self.assertTrue(os.path.isfile(save))
+
+    # @unittest.skip('Skipping...')
+    def test_d10_patient_500(self):
+        save = os.path.join(self.save_dir, 'patient_D10_5.00.csv')
+        self.instrument.convert_pdf_test(self.d10_patient_500)
+        self.d10.build_csv(save)
+        self.assertTrue(os.path.isfile(save))
+
+    # @unittest.skip('Skipping...')
+    def test_d10_control_430(self):
+        save = os.path.join(self.save_dir, 'control_D10_4.30.csv')
+        self.instrument.convert_pdf_test(self.d10_control_430)
+        self.d10.build_csv(save)
         self.assertTrue(os.path.isfile(save))
 
 

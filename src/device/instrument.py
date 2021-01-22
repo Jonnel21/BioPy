@@ -1,8 +1,9 @@
+from io import TextIOWrapper
 from shutil import rmtree
 from re import search
 from re import match
 from pandas import DataFrame
-from os import getenv
+from os import DirEntry, getenv
 from os import mkdir
 from os import path
 from os import scandir
@@ -10,6 +11,8 @@ from datetime import datetime
 from pyxpdf import Document
 from pyxpdf.xpdf import TextControl
 from src.peak import Peak
+import os
+import sys
 
 
 class InstrumentStrategy():
@@ -17,6 +20,14 @@ class InstrumentStrategy():
     def __init__(self):
         self.temp_dir = path.join(getenv('programdata'), 'BioPy_Temp')
         self.logs = path.join(getenv('programdata'), 'BioPy_Logs')
+
+    def check_file_size(self):
+        """Remove txt files that appear to be incomplete or invalid."""
+
+        with scandir(self.temp_dir) as it:
+            for entry in it:
+                if(entry.stat().st_size <= 300):
+                    os.remove(entry.path)
 
     def convert_pdf_test(self, dir_path: str):
         """Takes a pdf file and converts it to a txt file.
@@ -42,6 +53,7 @@ class InstrumentStrategy():
                             text_ctrl = TextControl('simple', discard_clipped=True)
                             text = label_page.text(control=text_ctrl)
                             file.write(text)
+
                     else:
                         name = entry.name
                         for j in range(doc.num_pages):
@@ -55,6 +67,8 @@ class InstrumentStrategy():
                                 text_ctrl = TextControl('simple', discard_clipped=True)
                                 text = label_page.text(control=text_ctrl)
                                 file.write(text)
+        self.check_file_size()
+
 
     def convert_pdf(self, pdf_tuples: tuple):
         """Takes a pdf file and converts it to a txt file.
