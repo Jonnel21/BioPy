@@ -1,9 +1,8 @@
-from io import TextIOWrapper
 from shutil import rmtree
 from re import search
 from re import match
 from pandas import DataFrame
-from os import DirEntry, getenv
+from os import getenv
 from os import mkdir
 from os import path
 from os import scandir
@@ -12,7 +11,6 @@ from pyxpdf import Document
 from pyxpdf.xpdf import TextControl
 from src.peak import Peak
 import os
-import sys
 
 
 class InstrumentStrategy():
@@ -68,7 +66,6 @@ class InstrumentStrategy():
                                 text = label_page.text(control=text_ctrl)
                                 file.write(text)
         self.check_file_size()
-
 
     def convert_pdf(self, pdf_tuples: tuple):
         """Takes a pdf file and converts it to a txt file.
@@ -157,7 +154,7 @@ class InstrumentStrategy():
             for i in range(num_unknown):
                 lst[lst.index("Unknown")] += str(i+1)
         else:
-            return "There are no %ss in the list." % Peak.UNKNOWN.value
+            return f"There are no {Peak.UNKNOWN.value}s in the list."
 
     def to_nested(self, table: list):
         """Converts the peak list to a nested list.

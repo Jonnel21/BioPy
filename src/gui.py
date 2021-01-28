@@ -1,5 +1,5 @@
 from tkinter import Listbox, Frame, Button
-from tkinter import Tk, ttk, Menu, PhotoImage
+from tkinter import ttk, Menu, PhotoImage
 from tkinter import messagebox, StringVar
 from tkinter import Scrollbar, Radiobutton
 from tkinter import EXTENDED, HORIZONTAL
@@ -18,6 +18,9 @@ from pyxpdf.xpdf import PDFSyntaxError
 from datetime import datetime
 import tkinter.filedialog as fd
 from src.widget.button import HoverButton
+from src.TkinterDnD2.TkinterDnD import DnDWrapper as dw
+from src.TkinterDnD2 import TkinterDnD
+from src.TkinterDnD2 import DND_FILES
 import sys
 import os
 
@@ -51,6 +54,8 @@ class Window:
         self.optionContainter.pack(anchor=E)
 
         self.listbox1 = Listbox(self.container1)
+        dw.drop_target_register(self.listbox1, DND_FILES)
+        dw.dnd_bind(self=self.listbox1, sequence='<<Drop>>', func=self.onDrop)
 
         self.scrollbar = Scrollbar(self.container1)
         self.scrollbar.configure(command=self.listbox1.yview)
@@ -122,6 +127,14 @@ class Window:
 
         # Positions the window in the center of the page.
         self.parent.geometry("+{}+{}".format(positionRight, positionDown))
+
+    def onDrop(self, event):
+        print('Dropping files...')
+        filename = event.data.split()
+        if len(filename) >= 1:
+            for f in filename:
+                print(f)
+                self.listbox1.insert(END, f)
 
     def onLogs(self):
         """Open log file directory in programdata.
@@ -432,7 +445,7 @@ class Window:
                 self.qu.get()
 
 
-root = Tk()
+root = TkinterDnD.Tk()
 app = Window(root)
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     root.iconphoto(False, PhotoImage(file="./assets/biopy_icon.png"))

@@ -1,7 +1,7 @@
 import semantic_version
 import sys
 
-version = "0.1.0"
+version = "1.0.0"
 v = semantic_version.Version(f"{version}+build.{sys.argv[1]}")
 
 print(f"Major: {v.major}")
