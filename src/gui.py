@@ -130,11 +130,14 @@ class Window:
 
     def onDrop(self, event):
         print('Dropping files...')
-        filename = event.data.split()
+        files = event.data
+        data = files.replace('{', "")
+        filename = data.split('}')
+        filename.remove('')
         if len(filename) >= 1:
             for f in filename:
-                print(f)
-                self.listbox1.insert(END, f)
+                print(f.strip())
+                self.listbox1.insert(END, f.strip())
 
     def onLogs(self):
         """Open log file directory in programdata.
