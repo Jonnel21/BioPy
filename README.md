@@ -20,7 +20,7 @@ To update dependecies use `pip freeze > requirements.txt`
 [Tkinter Resources](https://wiki.python.org/moin/TkInter)
 
 ## How to run
-Enter the root directory: type `cd BioPy` on the terminal
+Enter the root directory: type `cd BioPy/src` on the terminal
 
 To start the application: type `python gui.py` on the terminal
 
